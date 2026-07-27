@@ -35,22 +35,21 @@ const PREDEFINED_USERS: Record<User["role"], User> = {
   },
 };
 
-function getInitialUser(): User | null {
-  if (typeof window === "undefined") return null;
-  const storedUser = localStorage.getItem("eacrms_session");
-  if (storedUser) {
-    try {
-      return JSON.parse(storedUser);
-    } catch (e) {
-      console.error("Failed to parse stored session", e);
-    }
-  }
-  return null;
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(getInitialUser);
-  const isLoading = false;
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  React.useEffect(() => {
+    const storedUser = localStorage.getItem("eacrms_session");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error("Failed to parse stored session", e);
+      }
+    }
+    setIsLoading(false);
+  }, []);
 
   const login = (role: "Federation Admin" | "Athlete" | "Club Admin") => {
     const selectedUser = PREDEFINED_USERS[role];

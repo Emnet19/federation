@@ -277,10 +277,10 @@ export default function StandaloneClubAdminRegisterPage() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">
-                  Club Admin Portal
+                  Club Registration Portal
                 </span>
-                <span className="rounded-full bg-blue-500/10 px-2.5 py-0.5 text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                  Member Registration
+                <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  New Club Application
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 dark:text-zinc-400 font-mono">
@@ -313,20 +313,11 @@ export default function StandaloneClubAdminRegisterPage() {
         <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Club Member & Coach Registration Center
+              Athletics Club Registration
             </h1>
             <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
-              Official self-service portal for club managers to onboard athletes and coaches under their club roster.
+              Register your athletics club with the Ethiopian Athletics Federation. Complete the form below — your application will be reviewed and verified by EAF administrators.
             </p>
-          </div>
-          <div className="flex items-center gap-3 rounded-xl bg-slate-50 dark:bg-zinc-950 p-3 border border-slate-200 dark:border-zinc-800 shrink-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-bold">
-              {user?.name ? user.name[0] : "C"}
-            </div>
-            <div className="text-xs">
-              <p className="font-bold text-slate-900 dark:text-zinc-200">{user?.name || "Haile Gebrselassie"}</p>
-              <p className="text-[10px] text-blue-600 dark:text-blue-400 font-mono">Licensed Club Administrator</p>
-            </div>
           </div>
         </div>
 
@@ -376,10 +367,10 @@ export default function StandaloneClubAdminRegisterPage() {
           </div>
         )}
 
-        {/* MAIN LAYOUT: REGISTRATION FORM + LIVE ROSTER */}
-        <div className="grid gap-8 lg:grid-cols-12">
+        {/* MAIN LAYOUT: REGISTRATION FORM ONLY */}
+        <div className="mx-auto max-w-3xl">
           {/* REGISTRATION FORM CONTAINER */}
-          <div className="lg:col-span-7 rounded-2xl border border-slate-200 bg-white p-7 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md space-y-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-white p-7 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md space-y-6 shadow-sm">
             {/* Header & Switcher */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-zinc-800 pb-5 gap-3">
               <div>
@@ -714,74 +705,6 @@ export default function StandaloneClubAdminRegisterPage() {
                 </button>
               </div>
             </form>
-          </div>
-
-          {/* REGISTERED ROSTER DIRECTORY COLUMN */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md space-y-5 shadow-sm">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Registered Roster</h3>
-                  <p className="text-xs text-slate-500 dark:text-zinc-400">Total {members.length} active members</p>
-                </div>
-                <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                  Fayda Verified
-                </span>
-              </div>
-
-              {/* Search & Filters */}
-              <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
-                <input
-                  type="text"
-                  value={searchFilter}
-                  onChange={(e) => setSearchFilter(e.target.value)}
-                  placeholder="Search name, Fayda ID..."
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-blue-500 focus:outline-none font-mono"
-                />
-                <select
-                  value={roleFilter}
-                  onChange={(e) => setRoleFilter(e.target.value as "All" | "Athlete" | "Coach")}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-blue-500 focus:outline-none font-medium shrink-0"
-                >
-                  <option value="All">All Roles</option>
-                  <option value="Athlete">Athletes</option>
-                  <option value="Coach">Coaches</option>
-                </select>
-              </div>
-
-              {/* Member Roster List */}
-              <div className="space-y-3 max-h-[520px] overflow-y-auto pr-1">
-                {filteredMembers.map((m) => (
-                  <div
-                    key={m.id}
-                    className="rounded-xl border border-slate-200/80 bg-slate-50/60 p-3.5 text-xs space-y-2 dark:border-zinc-800 dark:bg-zinc-950/60 transition-all hover:border-slate-300 dark:hover:border-zinc-700"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h4 className="font-bold text-slate-900 dark:text-zinc-100 text-sm">{m.fullName}</h4>
-                        <p className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold mt-0.5">
-                          {m.clubName}
-                        </p>
-                      </div>
-                      <span
-                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono border ${
-                          m.memberType === "Athlete"
-                            ? "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20"
-                            : "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20"
-                        }`}
-                      >
-                        {m.memberType}
-                      </span>
-                    </div>
-
-                    <div className="flex flex-wrap items-center justify-between border-t border-slate-200/60 dark:border-zinc-800/60 pt-2 text-[11px] font-mono text-slate-600 dark:text-zinc-400">
-                      <span>ID: {m.id}</span>
-                      <span>Fayda: {m.faydaId}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </main>

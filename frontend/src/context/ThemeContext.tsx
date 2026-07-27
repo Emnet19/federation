@@ -12,9 +12,21 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 function getInitialTheme(): Theme {
-  if (typeof window === "undefined") return "dark";
-  // Read from class already set by inline script in layout.tsx
-  return document.documentElement.classList.contains("dark") ? "dark" : "light";
+  if (typeof window === "undefined") return "light";
+  try {
+    const stored = localStorage.getItem("eacrms_theme") as Theme | null;
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolved: Theme = stored === "dark" || stored === "light" ? stored : prefersDark ? "dark" : "light";
+    // Apply immediately to avoid flash
+    if (resolved === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    return resolved;
+  } catch {
+    return "light";
+  }
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {

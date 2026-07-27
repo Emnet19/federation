@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 export default function Home() {
   return (
@@ -46,87 +47,96 @@ export default function Home() {
         {/* 3 Portal Entry Cards */}
         <div className="grid gap-6 md:grid-cols-3">
           {/* Card 1: Athlete Portal */}
-          <Link
-            href="/athlete/register"
-            className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-lg shadow-slate-200/50 transition-all hover:border-yellow-500 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900/40 dark:shadow-none dark:hover:border-yellow-500/50 dark:hover:bg-zinc-900/70 backdrop-blur-md"
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-500/10 mb-4">
-              <svg className="h-6 w-6 text-yellow-500 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mb-2">Athlete Portal</h2>
-            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed flex-1">
-              Register with your Fayda National ID, view personal records, manage race entries, and access digital achievement badges and split times.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-1.5 text-[10px] font-mono">
-              <span className="rounded bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 text-slate-700 dark:text-zinc-400">Fayda ID Login</span>
-              <span className="rounded bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 text-slate-700 dark:text-zinc-400">GPS Check-In</span>
-            </div>
-            <div className="mt-6">
-              <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-yellow-500 px-4 py-2.5 text-xs font-bold text-slate-950 transition-all group-hover:bg-yellow-400">
-                Enter Athlete Portal
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </span>
-            </div>
+          <Link href="/athlete/register" className="group flex">
+            <Card className="flex flex-col w-full text-left transition-all hover:border-yellow-500 hover:shadow-xl dark:hover:border-yellow-500/50 dark:hover:bg-zinc-900/10 backdrop-blur-md">
+              <CardHeader className="pb-2">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-500/10 mb-2">
+                  <svg className="h-6 w-6 text-yellow-500 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <CardTitle className="text-xl font-extrabold text-slate-900 dark:text-white">Athlete Portal</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 pb-4">
+                <CardDescription className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                  Register with your Fayda National ID, view personal records, manage race entries, and access digital achievement badges and split times.
+                </CardDescription>
+                <div className="mt-5 flex flex-wrap gap-1.5 text-[10px] font-mono">
+                  <span className="rounded bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 text-slate-700 dark:text-zinc-400">Fayda ID Login</span>
+                  <span className="rounded bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 text-slate-700 dark:text-zinc-400">GPS Check-In</span>
+                </div>
+              </CardContent>
+              <CardFooter className="pt-2 border-t-0 bg-transparent">
+                <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-yellow-500 px-4 py-2.5 text-xs font-bold text-slate-950 transition-all group-hover:bg-yellow-400">
+                  Enter Athlete Portal
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+              </CardFooter>
+            </Card>
           </Link>
 
           {/* Card 2: Club Admin Member Registration Standalone Screen */}
-          <Link
-            href="/club-admin/register"
-            className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-lg shadow-slate-200/50 transition-all hover:border-blue-500 hover:shadow-xl dark:border-blue-500/20 dark:bg-blue-500/5 dark:shadow-none dark:hover:border-blue-500/40 dark:hover:bg-blue-500/10 backdrop-blur-md"
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 mb-4">
-              <svg className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mb-2">Club Registry</h2>
-            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed flex-1">
-              Self-service club licensing, regional sports association registration, roster management, and Fayda manager audits.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-1.5 text-[10px] font-mono">
-              <span className="rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 px-2 py-0.5">Club Licensing</span>
-              <span className="rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 px-2 py-0.5">Roster Audits</span>
-            </div>
-            <div className="mt-6">
-              <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white transition-all group-hover:bg-blue-500">
-                Register & Manage Club
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </span>
-            </div>
+          <Link href="/club-admin/register" className="group flex">
+            <Card className="flex flex-col w-full text-left transition-all hover:border-blue-500 hover:shadow-xl dark:hover:border-blue-500/40 dark:hover:bg-zinc-900/10 backdrop-blur-md">
+              <CardHeader className="pb-2">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 mb-2">
+                  <svg className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <CardTitle className="text-xl font-extrabold text-slate-900 dark:text-white">Club Registry</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 pb-4">
+                <CardDescription className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                  Self-service club licensing, regional sports association registration, roster management, and Fayda manager audits.
+                </CardDescription>
+                <div className="mt-5 flex flex-wrap gap-1.5 text-[10px] font-mono">
+                  <span className="rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 px-2 py-0.5">Club Licensing</span>
+                  <span className="rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 px-2 py-0.5">Roster Audits</span>
+                </div>
+              </CardContent>
+              <CardFooter className="pt-2 border-t-0 bg-transparent">
+                <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white transition-all group-hover:bg-blue-500">
+                  Register & Manage Club
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+              </CardFooter>
+            </Card>
           </Link>
 
           {/* Card 3: Federation Admin Portal */}
-          <Link
-            href="/federation/login"
-            className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-lg shadow-slate-200/50 transition-all hover:border-emerald-500 hover:shadow-xl dark:border-emerald-500/20 dark:bg-emerald-500/5 dark:shadow-none dark:hover:border-emerald-500/40 dark:hover:bg-emerald-500/10 backdrop-blur-md"
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 mb-4">
-              <svg className="h-6 w-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mb-2">Federation Admin</h2>
-            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed flex-1">
-              Access the EAF administrative control centre to manage Fayda verification queues, events, club policy, and results.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-1.5 text-[10px] font-mono">
-              <span className="rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 px-2 py-0.5">Role Protected</span>
-              <span className="rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 px-2 py-0.5">AES-256</span>
-            </div>
-            <div className="mt-6">
-              <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white transition-all group-hover:bg-emerald-500">
-                Enter Admin Portal
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </span>
-            </div>
+          <Link href="/federation/login" className="group flex">
+            <Card className="flex flex-col w-full text-left transition-all hover:border-emerald-500 hover:shadow-xl dark:hover:border-emerald-500/40 dark:hover:bg-zinc-900/10 backdrop-blur-md">
+              <CardHeader className="pb-2">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 mb-2">
+                  <svg className="h-6 w-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                  </svg>
+                </div>
+                <CardTitle className="text-xl font-extrabold text-slate-900 dark:text-white">Federation Admin</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 pb-4">
+                <CardDescription className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                  Access the EAF administrative control centre to manage Fayda verification queues, events, club policy, and results.
+                </CardDescription>
+                <div className="mt-5 flex flex-wrap gap-1.5 text-[10px] font-mono">
+                  <span className="rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 px-2 py-0.5">Role Protected</span>
+                  <span className="rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 px-2 py-0.5">AES-256</span>
+                </div>
+              </CardContent>
+              <CardFooter className="pt-2 border-t-0 bg-transparent">
+                <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white transition-all group-hover:bg-emerald-500">
+                  Enter Admin Portal
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+              </CardFooter>
+            </Card>
           </Link>
         </div>
 

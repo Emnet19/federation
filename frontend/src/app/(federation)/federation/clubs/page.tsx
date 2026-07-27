@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 // Types
 export interface RegisteredClub {
@@ -519,18 +520,18 @@ export default function ClubRegistrationPage() {
       {activeTab === "members" && (
         <div className="grid gap-8 lg:grid-cols-12">
           {/* Member Registration Form */}
-          <div className="lg:col-span-7 rounded-2xl border border-slate-200 bg-white p-7 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md space-y-6 shadow-sm">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-zinc-800 pb-5 gap-3">
+          <Card className="lg:col-span-7 backdrop-blur-md">
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b pb-5 gap-3">
               <div>
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <CardTitle className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs">
                     +
                   </span>
                   Club Admin Member Registration Form
-                </h2>
-                <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+                </CardTitle>
+                <CardDescription className="mt-1 text-xs text-slate-500 dark:text-zinc-400 font-normal">
                   Register athletes and coaches under your club or as unattached federation members.
-                </p>
+                </CardDescription>
               </div>
 
               {/* Athlete / Coach Switcher */}
@@ -564,8 +565,9 @@ export default function ClubRegistrationPage() {
                   📋 Coach Form
                 </button>
               </div>
-            </div>
+            </CardHeader>
 
+            <CardContent className="pt-6">
             <form onSubmit={handleMemberSubmit} className="space-y-4 text-xs">
               {/* Optional Club Association Select */}
               <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 space-y-2">
@@ -859,89 +861,92 @@ export default function ClubRegistrationPage() {
                 </button>
               </div>
             </form>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Quick Roster Preview Column */}
           <div className="lg:col-span-5 space-y-6">
             {/* Summary Widget */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md space-y-4 shadow-sm">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
-                <span>Roster Breakdown</span>
-                <span className="text-xs font-mono font-normal text-slate-500 dark:text-zinc-400">EAF Certified</span>
-              </h3>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-4 text-center">
-                  <span className="text-2xl font-extrabold text-yellow-600 dark:text-yellow-400 font-mono block">
-                    {members.filter((m) => m.memberType === "Athlete").length}
-                  </span>
-                  <span className="text-[11px] font-bold text-slate-700 dark:text-zinc-300 uppercase font-mono">
-                    Athletes
-                  </span>
+            <Card className="backdrop-blur-md">
+              <CardHeader className="flex flex-row items-center justify-between border-b pb-3 space-y-0">
+                <CardTitle className="text-sm font-bold text-slate-900 dark:text-white">Roster Breakdown</CardTitle>
+                <CardDescription className="text-xs font-mono font-normal text-slate-500 dark:text-zinc-400">EAF Certified</CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4 space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-4 text-center">
+                    <span className="text-2xl font-extrabold text-yellow-600 dark:text-yellow-400 font-mono block">
+                      {members.filter((m) => m.memberType === "Athlete").length}
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-700 dark:text-zinc-300 uppercase font-mono">
+                      Athletes
+                    </span>
+                  </div>
+                  <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 text-center">
+                    <span className="text-2xl font-extrabold text-blue-600 dark:text-blue-400 font-mono block">
+                      {members.filter((m) => m.memberType === "Coach").length}
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-700 dark:text-zinc-300 uppercase font-mono">
+                      Coaches
+                    </span>
+                  </div>
                 </div>
-                <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 text-center">
-                  <span className="text-2xl font-extrabold text-blue-600 dark:text-blue-400 font-mono block">
-                    {members.filter((m) => m.memberType === "Coach").length}
-                  </span>
-                  <span className="text-[11px] font-bold text-slate-700 dark:text-zinc-300 uppercase font-mono">
-                    Coaches
-                  </span>
-                </div>
-              </div>
 
-              <div className="rounded-xl bg-slate-50 dark:bg-zinc-950 p-4 border border-slate-200 dark:border-zinc-800 space-y-2 text-xs">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-mono block">
-                  Proclamation No. 1284/2023 Validation
-                </span>
-                <p className="text-[11px] text-slate-600 dark:text-zinc-400 leading-relaxed">
-                  All submitted athlete and coach profiles undergo automated real-time verification against the National Fayda Identity Registry.
-                </p>
-              </div>
-            </div>
+                <div className="rounded-xl bg-slate-50 dark:bg-zinc-950 p-4 border border-slate-200 dark:border-zinc-800 space-y-2 text-xs">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-mono block">
+                    Proclamation No. 1284/2023 Validation
+                  </span>
+                  <p className="text-[11px] text-slate-600 dark:text-zinc-400 leading-relaxed">
+                    All submitted athlete and coach profiles undergo automated real-time verification against the National Fayda Identity Registry.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Recent Additions List */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md space-y-4 shadow-sm">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Recent Roster Registrations</h3>
+            <Card className="backdrop-blur-md">
+              <CardHeader className="flex flex-row items-center justify-between border-b pb-3 space-y-0">
+                <CardTitle className="text-sm font-bold text-slate-900 dark:text-white">Recent Roster Registrations</CardTitle>
                 <button
                   onClick={() => setActiveTab("directory")}
                   className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
                 >
                   View All →
                 </button>
-              </div>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="space-y-3">
+                  {members.slice(0, 4).map((m) => (
+                    <div
+                      key={m.id}
+                      className="flex items-center justify-between rounded-xl border border-slate-200/80 bg-slate-50/50 p-3 text-xs dark:border-zinc-800 dark:bg-zinc-950/50"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`flex h-8 w-8 items-center justify-center rounded-lg font-bold text-xs ${
+                            m.memberType === "Athlete"
+                              ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20"
+                              : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
+                          }`}
+                        >
+                          {m.memberType === "Athlete" ? "ATH" : "CCH"}
+                        </div>
+                        <div>
+                          <p className="font-bold text-slate-900 dark:text-zinc-100">{m.fullName}</p>
+                          <p className="text-[10px] text-slate-500 dark:text-zinc-400 font-mono">
+                            {m.clubName} · {m.faydaId}
+                          </p>
+                        </div>
+                      </div>
 
-              <div className="space-y-3">
-                {members.slice(0, 4).map((m) => (
-                  <div
-                    key={m.id}
-                    className="flex items-center justify-between rounded-xl border border-slate-200/80 bg-slate-50/50 p-3 text-xs dark:border-zinc-800 dark:bg-zinc-950/50"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`flex h-8 w-8 items-center justify-center rounded-lg font-bold text-xs ${
-                          m.memberType === "Athlete"
-                            ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20"
-                            : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
-                        }`}
-                      >
-                        {m.memberType === "Athlete" ? "ATH" : "CCH"}
-                      </div>
-                      <div>
-                        <p className="font-bold text-slate-900 dark:text-zinc-100">{m.fullName}</p>
-                        <p className="text-[10px] text-slate-500 dark:text-zinc-400 font-mono">
-                          {m.clubName} · {m.faydaId}
-                        </p>
-                      </div>
+                      <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold font-mono text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        Verified
+                      </span>
                     </div>
-
-                    <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold font-mono text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                      Verified
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       )}
@@ -950,180 +955,213 @@ export default function ClubRegistrationPage() {
       {activeTab === "club" && (
         <div className="grid gap-8 lg:grid-cols-12">
           {/* Club Form */}
-          <div className="lg:col-span-5 rounded-2xl border border-slate-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md space-y-6 shadow-sm">
-            <div className="border-b border-slate-100 dark:border-zinc-800 pb-4">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs">
+          <Card className="lg:col-span-5 backdrop-blur-md">
+            <CardHeader className="border-b pb-4">
+              <CardTitle className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-normal">
                   +
                 </span>
                 Register New Athletics Club
-              </h2>
-              <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+              </CardTitle>
+              <CardDescription className="mt-1 text-xs text-slate-500 dark:text-zinc-400 font-normal">
                 Complete manager Fayda verification and regional charter licensing.
-              </p>
-            </div>
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              {clubSuccessMsg && (
+                <Card className="mb-6 border-emerald-500/30 bg-emerald-500/5">
+                  <CardContent className="pt-5 pb-5 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm">
+                        ✓
+                      </span>
+                      <div>
+                        <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400">
+                          Club Registered Successfully
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-zinc-400 font-normal">
+                          {clubSuccessMsg}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 pt-2">
+                      <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-center">
+                        <span className="block text-[10px] uppercase font-mono font-bold text-slate-500 dark:text-zinc-500 mb-0.5">
+                          Status
+                        </span>
+                        <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">
+                          Pending Verification
+                        </span>
+                      </div>
+                      <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-center">
+                        <span className="block text-[10px] uppercase font-mono font-bold text-slate-500 dark:text-zinc-500 mb-0.5">
+                          Next Step
+                        </span>
+                        <span className="text-xs font-bold text-slate-700 dark:text-zinc-300">
+                          EAF Review
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
-            {clubSuccessMsg && (
-              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                ✓ {clubSuccessMsg}
-              </div>
-            )}
+              <form onSubmit={handleClubSubmit} className="space-y-4 text-xs">
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">Club / Academy Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={clubName}
+                    onChange={(e) => setClubName(e.target.value)}
+                    placeholder="e.g. Gullele Youth Athletics Academy"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder-slate-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:border-emerald-500 focus:outline-none font-medium"
+                  />
+                </div>
 
-            <form onSubmit={handleClubSubmit} className="space-y-4 text-xs">
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">Club / Academy Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={clubName}
-                  onChange={(e) => setClubName(e.target.value)}
-                  placeholder="e.g. Gullele Youth Athletics Academy"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder-slate-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:border-emerald-500 focus:outline-none"
-                />
-              </div>
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">Region / City Administration *</label>
+                  <select
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-emerald-500 focus:outline-none font-mono"
+                  >
+                    <option value="Addis Ababa">Addis Ababa</option>
+                    <option value="Oromia">Oromia</option>
+                    <option value="Amhara">Amhara</option>
+                    <option value="Sidama">Sidama</option>
+                    <option value="Tigray">Tigray</option>
+                    <option value="SNNPR">SNNPR</option>
+                    <option value="Dire Dawa">Dire Dawa</option>
+                    <option value="Somali">Somali</option>
+                  </select>
+                </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">Region / City Administration *</label>
-                <select
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-emerald-500 focus:outline-none font-mono"
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">Club Category *</label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-emerald-500 focus:outline-none font-medium"
+                  >
+                    <option value="Regional Club">Regional Club</option>
+                    <option value="National League">National League</option>
+                    <option value="School Athletics">School Athletics</option>
+                    <option value="Youth Academy">Youth Academy</option>
+                  </select>
+                </div>
+
+                <div className="border-t border-slate-100 dark:border-zinc-800/80 pt-4">
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">Club Manager Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={managerName}
+                    onChange={(e) => setManagerName(e.target.value)}
+                    placeholder="e.g. Gezahegne Abera"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder-slate-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:border-emerald-500 focus:outline-none font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">Manager Fayda National ID Number *</label>
+                  <input
+                    type="text"
+                    required
+                    value={clubFaydaId}
+                    onChange={(e) => setClubFaydaId(formatFaydaIdInput(e.target.value))}
+                    placeholder="FIN-3920-8492"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 font-mono placeholder-slate-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:border-emerald-500 focus:outline-none font-medium"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmittingClub}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-500 active:scale-[0.98] disabled:opacity-50"
                 >
-                  <option value="Addis Ababa">Addis Ababa</option>
-                  <option value="Oromia">Oromia</option>
-                  <option value="Amhara">Amhara</option>
-                  <option value="Sidama">Sidama</option>
-                  <option value="Tigray">Tigray</option>
-                  <option value="SNNPR">SNNPR</option>
-                  <option value="Dire Dawa">Dire Dawa</option>
-                  <option value="Somali">Somali</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">Club Category *</label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-emerald-500 focus:outline-none"
-                >
-                  <option value="Regional Club">Regional Club</option>
-                  <option value="National League">National League</option>
-                  <option value="School Athletics">School Athletics</option>
-                  <option value="Youth Academy">Youth Academy</option>
-                </select>
-              </div>
-
-              <div className="border-t border-slate-100 dark:border-zinc-800/80 pt-4">
-                <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">Club Manager Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={managerName}
-                  onChange={(e) => setManagerName(e.target.value)}
-                  placeholder="e.g. Gezahegne Abera"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder-slate-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:border-emerald-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">Manager Fayda National ID Number *</label>
-                <input
-                  type="text"
-                  required
-                  value={clubFaydaId}
-                  onChange={(e) => setClubFaydaId(formatFaydaIdInput(e.target.value))}
-                  placeholder="FIN-3920-8492"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 font-mono placeholder-slate-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:border-emerald-500 focus:outline-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmittingClub}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-500 active:scale-[0.98] disabled:opacity-50"
-              >
-                {isSubmittingClub ? (
-                  <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                    Registering & Verifying Fayda ID...
-                  </>
-                ) : (
-                  "Complete Club Registration"
-                )}
-              </button>
-            </form>
-          </div>
+                  {isSubmittingClub ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                      Registering & Verifying Fayda ID...
+                    </>
+                  ) : (
+                    "Complete Club Registration"
+                  )}
+                </button>
+              </form>
+            </CardContent>
+          </Card>
 
           {/* Registered Clubs Directory */}
-          <div className="lg:col-span-7 rounded-2xl border border-slate-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md space-y-6 shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-4">
+          <Card className="lg:col-span-7 backdrop-blur-md">
+            <CardHeader className="flex flex-row items-center justify-between border-b pb-4 space-y-0">
               <div>
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Registered Athletics Clubs</h2>
-                <p className="text-xs text-slate-500 dark:text-zinc-400">EAF Verified Registry ({clubs.length} registered)</p>
+                <CardTitle className="text-lg font-bold text-slate-900 dark:text-white">Registered Athletics Clubs</CardTitle>
+                <CardDescription className="text-xs text-slate-500 dark:text-zinc-400 font-normal">EAF Verified Registry ({clubs.length} registered)</CardDescription>
               </div>
               <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                 Live Registry
               </span>
-            </div>
-
-            <div className="space-y-4">
-              {clubs.map((c) => (
-                <div
-                  key={c.id}
-                  className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50/50 p-4 transition-all hover:border-slate-300 dark:border-zinc-800/80 dark:bg-zinc-950/60 dark:hover:border-zinc-700"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-bold text-slate-900 dark:text-zinc-100 text-sm">{c.name}</h3>
-                      <p className="text-[10px] text-slate-500 dark:text-zinc-500 font-mono mt-0.5">
-                        ID: {c.id} · Region: {c.region} · Category: {c.category}
-                      </p>
-                    </div>
-                    <span
-                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono border ${
-                        c.status === "Active License"
-                          ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
-                          : "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20"
-                      }`}
-                    >
-                      {c.status}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-wrap items-center justify-between border-t border-slate-200/60 dark:border-zinc-800/60 pt-3 text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-bold text-slate-700 dark:text-zinc-300">
-                        {c.manager.split(" ").map((n) => n[0]).join("")}
-                      </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="space-y-4">
+                {clubs.map((c) => (
+                  <div
+                    key={c.id}
+                    className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50/50 p-4 transition-all hover:border-slate-300 dark:border-zinc-800/80 dark:bg-zinc-950/60 dark:hover:border-zinc-700"
+                  >
+                    <div className="flex items-start justify-between">
                       <div>
-                        <span className="text-slate-600 dark:text-zinc-400 font-medium">{c.manager}</span>
-                        <span className="ml-2 text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">Fayda Verified ({c.faydaId})</span>
+                        <h3 className="font-bold text-slate-900 dark:text-zinc-100 text-sm">{c.name}</h3>
+                        <p className="text-[10px] text-slate-500 dark:text-zinc-500 font-mono mt-0.5">
+                          ID: {c.id} · Region: {c.region} · Category: {c.category}
+                        </p>
                       </div>
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono border ${
+                          c.status === "Active License"
+                            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
+                            : "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20"
+                        }`}
+                      >
+                        {c.status}
+                      </span>
                     </div>
-                    <span className="text-[11px] font-semibold text-slate-700 dark:text-zinc-300 font-mono">
-                      {c.athletesCount} Registered Athletes
-                    </span>
+
+                    <div className="flex flex-wrap items-center justify-between border-t border-slate-200/60 dark:border-zinc-800/60 pt-3 text-xs">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-bold text-slate-700 dark:text-zinc-300">
+                          {c.manager.split(" ").map((n) => n[0]).join("")}
+                        </div>
+                        <div>
+                          <span className="text-slate-600 dark:text-zinc-400 font-medium">{c.manager}</span>
+                          <span className="ml-2 text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">Fayda Verified ({c.faydaId})</span>
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-semibold text-slate-700 dark:text-zinc-300 font-mono">
+                        {c.athletesCount} Registered Athletes
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
 
       {/* LIVE ROSTER DIRECTORY TAB */}
       {activeTab === "directory" && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-7 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md space-y-6 shadow-sm">
-          {/* Controls Bar */}
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-slate-100 dark:border-zinc-800 pb-5">
+        <Card className="backdrop-blur-md">
+          <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b pb-5">
             <div>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+              <CardTitle className="text-lg font-bold text-slate-900 dark:text-white">
                 Federation Live Roster Directory
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">
+              </CardTitle>
+              <CardDescription className="text-xs text-slate-500 dark:text-zinc-400">
                 Official directory of verified Athletes and Coaches across all clubs.
-              </p>
+              </CardDescription>
             </div>
 
             {/* Search and Filters */}
@@ -1165,74 +1203,75 @@ export default function ClubRegistrationPage() {
                 <option value="UNATTACHED">Unattached / Independent</option>
               </select>
             </div>
-          </div>
-
-          {/* Members Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-200 dark:border-zinc-800 text-[10px] uppercase tracking-wider font-mono text-slate-500 dark:text-zinc-500">
-                  <th className="py-3 px-4">Member ID</th>
-                  <th className="py-3 px-4">Role</th>
-                  <th className="py-3 px-4">Full Name</th>
-                  <th className="py-3 px-4">Fayda National ID</th>
-                  <th className="py-3 px-4">Club Association</th>
-                  <th className="py-3 px-4">Category / Specialization</th>
-                  <th className="py-3 px-4">Contact</th>
-                  <th className="py-3 px-4 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-zinc-800/60">
-                {filteredMembers.length > 0 ? (
-                  filteredMembers.map((m) => (
-                    <tr key={m.id} className="hover:bg-slate-50/80 dark:hover:bg-zinc-800/30 transition-colors">
-                      <td className="py-3.5 px-4 font-mono font-bold text-slate-900 dark:text-zinc-100">
-                        {m.id}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <span
-                          className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono border ${
-                            m.memberType === "Athlete"
-                              ? "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20"
-                              : "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20"
-                          }`}
-                        >
-                          {m.memberType}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-white">
-                        {m.fullName}
-                      </td>
-                      <td className="py-3.5 px-4 font-mono text-slate-600 dark:text-zinc-400">
-                        {m.faydaId}
-                      </td>
-                      <td className="py-3.5 px-4 font-medium text-slate-700 dark:text-zinc-300">
-                        {m.clubName}
-                      </td>
-                      <td className="py-3.5 px-4 text-slate-600 dark:text-zinc-400">
-                        {m.memberType === "Athlete" ? m.eventCategory : m.certificationLevel}
-                      </td>
-                      <td className="py-3.5 px-4 font-mono text-slate-600 dark:text-zinc-400 text-[11px]">
-                        {m.phone}
-                      </td>
-                      <td className="py-3.5 px-4 text-right">
-                        <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold font-mono text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-                          Verified
-                        </span>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {/* Members Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-slate-200 dark:border-zinc-800 text-[10px] uppercase tracking-wider font-mono text-slate-500 dark:text-zinc-500">
+                    <th className="py-3 px-4">Member ID</th>
+                    <th className="py-3 px-4">Role</th>
+                    <th className="py-3 px-4">Full Name</th>
+                    <th className="py-3 px-4">Fayda National ID</th>
+                    <th className="py-3 px-4">Club Association</th>
+                    <th className="py-3 px-4">Category / Specialization</th>
+                    <th className="py-3 px-4">Contact</th>
+                    <th className="py-3 px-4 text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-zinc-800/60">
+                  {filteredMembers.length > 0 ? (
+                    filteredMembers.map((m) => (
+                      <tr key={m.id} className="hover:bg-slate-50/80 dark:hover:bg-zinc-800/30 transition-colors">
+                        <td className="py-3.5 px-4 font-mono font-bold text-slate-900 dark:text-zinc-100">
+                          {m.id}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <span
+                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono border ${
+                              m.memberType === "Athlete"
+                                ? "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20"
+                                : "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20"
+                            }`}
+                          >
+                            {m.memberType}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-white">
+                          {m.fullName}
+                        </td>
+                        <td className="py-3.5 px-4 font-mono text-slate-600 dark:text-zinc-400">
+                          {m.faydaId}
+                        </td>
+                        <td className="py-3.5 px-4 font-medium text-slate-700 dark:text-zinc-300">
+                          {m.clubName}
+                        </td>
+                        <td className="py-3.5 px-4 text-slate-600 dark:text-zinc-400">
+                          {m.memberType === "Athlete" ? m.eventCategory : m.certificationLevel}
+                        </td>
+                        <td className="py-3.5 px-4 font-mono text-slate-600 dark:text-zinc-400 text-[11px]">
+                          {m.phone}
+                        </td>
+                        <td className="py-3.5 px-4 text-right">
+                          <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold font-mono text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                            Verified
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={8} className="py-8 text-center text-slate-500 dark:text-zinc-500">
+                        No roster members found matching filter criteria.
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={8} className="py-8 text-center text-slate-500 dark:text-zinc-500">
-                      No roster members found matching filter criteria.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

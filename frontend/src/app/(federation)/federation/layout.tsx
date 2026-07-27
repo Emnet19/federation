@@ -147,15 +147,26 @@ export default function FederationLayout({ children }: { children: React.ReactNo
                 <p className="truncate text-[10px] text-slate-500 dark:text-zinc-500 font-mono">{user?.role}</p>
               </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-zinc-800 bg-transparent py-2 text-xs font-bold text-slate-600 dark:text-zinc-400 transition-all hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-600 dark:hover:text-red-400"
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Sign Out
-            </button>
+            <div className="mt-4 flex flex-col gap-2">
+              <Link
+                href="/"
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 py-2 text-xs font-bold text-slate-700 dark:text-zinc-300 transition-all hover:bg-slate-100 dark:hover:bg-zinc-800"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Portal Hub
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-zinc-800 bg-transparent py-2 text-xs font-bold text-slate-600 dark:text-zinc-400 transition-all hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-600 dark:hover:text-red-400"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Sign Out
+              </button>
+            </div>
           </div>
         </aside>
 
@@ -186,7 +197,17 @@ export default function FederationLayout({ children }: { children: React.ReactNo
               <span className="text-slate-900 dark:text-zinc-300 font-semibold">{activeLabel}</span>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <Link
+                href="/"
+                className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-200 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Portal Hub</span>
+              </Link>
+
               <ThemeToggle />
               <div className="rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-3 py-1 flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
