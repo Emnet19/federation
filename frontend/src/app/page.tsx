@@ -1,156 +1,338 @@
-import Link from "next/link";
+"use client";
+
+import React from "react";
 import Image from "next/image";
-import { ThemeToggle } from "@/components/common/ThemeToggle";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 py-12 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-200 overflow-hidden">
-      {/* Top Bar for Theme Switcher */}
-      <div className="absolute top-6 right-6 z-20 flex items-center gap-3">
-        <span className="text-xs font-semibold text-slate-500 dark:text-zinc-400 font-mono">Theme:</span>
-        <ThemeToggle />
-      </div>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F8FA", color: "#1D1D1F" }}>
+      {/* ── NAVIGATION BAR ── */}
+      <header
+        className="sticky top-0 z-40 px-4 sm:px-8 py-3.5 backdrop-blur-xl"
+        style={{
+          backgroundColor: "rgba(255,255,255,0.92)",
+          borderBottom: "1px solid #D9DEE5",
+        }}
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-between">
+          {/* Brand */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div
+              className="relative h-10 w-10 overflow-hidden rounded-xl p-1 shadow-sm transition-transform group-hover:scale-105"
+              style={{ backgroundColor: "#FFFFFF", border: "1px solid #D9DEE5" }}
+            >
+              <Image src="/logo.png" alt="EAF Logo" fill className="object-contain" priority />
+            </div>
+            <div>
+              <span className="text-lg font-extrabold tracking-tight block leading-none" style={{ color: "#1D1D1F" }}>
+                EACRMS
+              </span>
+              <span className="text-[10px] font-bold font-mono tracking-wider" style={{ color: "#0140A7" }}>
+                ETHIOPIAN ATHLETICS FEDERATION
+              </span>
+            </div>
+          </Link>
 
-      {/* Decorative background gradients */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-emerald-500/10 blur-[140px]" />
-        <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-yellow-500/10 blur-[140px]" />
-      </div>
+          {/* Nav Links */}
+          <div className="flex items-center gap-3">
+            <Link
+              href="/policy"
+              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all"
+              style={{
+                border: "1px solid #D9DEE5",
+                backgroundColor: "#FFFFFF",
+                color: "#555B63",
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#0140A7"; (e.currentTarget as HTMLElement).style.color = "#0140A7"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "#D9DEE5"; (e.currentTarget as HTMLElement).style.color = "#555B63"; }}
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: "#0140A7" }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              Policy &amp; Regulations
+            </Link>
 
-      <div className="relative z-10 w-full max-w-5xl space-y-10 text-center">
-        {/* EAF Official Logo & Header */}
-        <div className="space-y-4 flex flex-col items-center">
-          <div className="relative h-28 w-28 overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-2 shadow-xl shadow-emerald-500/10">
-            <Image
-              src="/logo.png"
-              alt="Ethiopian Athletics Federation Logo"
-              fill
-              sizes="112px"
-              className="object-contain p-1"
-              priority
-            />
+            <Link
+              href="/club-admin/login"
+              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-extrabold text-white shadow-md transition-all active:scale-95"
+              style={{ backgroundColor: "#0140A7" }}
+              onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#0A4870")}
+              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#0140A7")}
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+              Club Portal Sign In
+            </Link>
           </div>
-          <div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
-              EACRMS Portal Hub
+        </div>
+      </header>
+
+      {/* ── DECORATIVE BACKGROUND ── */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
+        <div className="absolute -top-32 -left-32 h-[500px] w-[500px] rounded-full blur-[160px]" style={{ backgroundColor: "rgba(1,64,167,0.07)" }} />
+        <div className="absolute top-1/2 -right-32 h-[500px] w-[500px] rounded-full blur-[160px]" style={{ backgroundColor: "rgba(230,165,0,0.07)" }} />
+      </div>
+
+      {/* ── MAIN CONTENT ── */}
+      <main className="relative z-10 flex-1 mx-auto max-w-7xl px-4 sm:px-8 py-12 space-y-20">
+
+        {/* HERO SECTION */}
+        <section className="grid lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-6 space-y-6">
+            <div
+              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold"
+              style={{ backgroundColor: "#DCEBF6", color: "#0140A7", border: "1px solid rgba(1,64,167,0.2)" }}
+            >
+              <span className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: "#0140A7" }} />
+              Official Ethiopian Athletics Operations Center
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.15]" style={{ color: "#1D1D1F" }}>
+              Ethiopian Athletics Competition &amp; Roster Management System
             </h1>
-            <p className="mt-2 text-base font-medium text-slate-600 dark:text-zinc-400">
-              Ethiopian Athletics Competition and Roster Management System
+
+            <p className="text-base leading-relaxed" style={{ color: "#555B63" }}>
+              Empowering Ethiopian athletes and national league clubs with verified biometric digital ID onboarding via{" "}
+              <strong style={{ color: "#0140A7" }}>Fayda National ID</strong>, World Athletics-compliant seeding engines,
+              and live photo-finish timing.
             </p>
-            <p className="mt-1 text-xs font-mono text-slate-500 dark:text-zinc-500">
-              Ethiopian Athletic Federation (EAF) · v1.1.0 · Proclamation No. 1284/2023 Compliant
+
+            {/* ACTION BUTTONS */}
+            <div className="flex flex-wrap gap-4 pt-2">
+              <Link
+                href="/athlete/register"
+                className="flex items-center gap-2.5 rounded-2xl px-7 py-4 text-sm font-extrabold text-white shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+                style={{ backgroundColor: "#E6A500" }}
+                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#C98F00")}
+                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#E6A500")}
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Register as an Athlete
+              </Link>
+
+              <Link
+                href="/club-admin/login"
+                className="flex items-center gap-2.5 rounded-2xl px-7 py-4 text-sm font-bold shadow-sm transition-all"
+                style={{
+                  border: "1px solid #D9DEE5",
+                  backgroundColor: "#FFFFFF",
+                  color: "#1D1D1F",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#0140A7"; (e.currentTarget as HTMLElement).style.color = "#0140A7"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "#D9DEE5"; (e.currentTarget as HTMLElement).style.color = "#1D1D1F"; }}
+              >
+                Club Admin Portal →
+              </Link>
+            </div>
+
+            {/* METRICS */}
+            <div className="grid grid-cols-3 gap-4 pt-6" style={{ borderTop: "1px solid #D9DEE5" }}>
+              <div>
+                <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: "#0140A7" }}>15,000+</p>
+                <p className="text-xs font-semibold" style={{ color: "#8B9098" }}>Verified Athletes</p>
+              </div>
+              <div>
+                <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: "#E6A500" }}>100%</p>
+                <p className="text-xs font-semibold" style={{ color: "#8B9098" }}>Fayda ID Sync</p>
+              </div>
+              <div>
+                <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: "#0140A7" }}>48 Clubs</p>
+                <p className="text-xs font-semibold" style={{ color: "#8B9098" }}>National League</p>
+              </div>
+            </div>
+          </div>
+
+          {/* HERO IMAGERY */}
+          <div className="lg:col-span-6 space-y-4">
+            <div
+              className="relative rounded-3xl overflow-hidden shadow-2xl group h-80 sm:h-96"
+              style={{ border: "1px solid #D9DEE5" }}
+            >
+              <Image
+                src="/ethiopian_athlete_hero.png"
+                alt="Ethiopian Track Athletes in Action"
+                fill
+                className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                priority
+              />
+              <div className="absolute inset-0 p-6 flex flex-col justify-end text-white" style={{ background: "linear-gradient(to top, rgba(1,64,167,0.85), rgba(1,64,167,0.2), transparent)" }}>
+                <div
+                  className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-mono font-bold backdrop-blur-md w-fit mb-2"
+                  style={{ backgroundColor: "rgba(230,165,0,0.25)", border: "1px solid rgba(230,165,0,0.5)", color: "#FFF3CC" }}
+                >
+                  ✓ FAYDA BIOMETRIC VERIFIED
+                </div>
+                <h3 className="text-xl font-extrabold tracking-tight">National Track &amp; Field Championships</h3>
+                <p className="text-xs mt-1" style={{ color: "#DCEBF6" }}>
+                  Addis Ababa National Stadium • Real-Time FinishLynx Timing &amp; World Athletics Seeding
+                </p>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="relative rounded-2xl overflow-hidden shadow-lg h-36 group" style={{ border: "1px solid #D9DEE5" }}>
+                <Image
+                  src="/ethiopian_marathon_runner.png"
+                  alt="Ethiopian Marathon Victory"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 p-4 flex flex-col justify-end text-white" style={{ background: "linear-gradient(to top, rgba(10,72,112,0.9), rgba(10,72,112,0.3), transparent)" }}>
+                  <p className="text-xs font-bold">Marathon League Trials</p>
+                  <p className="text-[10px] font-mono" style={{ color: "#DCEBF6" }}>Verified FAN Roster</p>
+                </div>
+              </div>
+
+              <div
+                className="rounded-2xl p-5 flex flex-col justify-between"
+                style={{ backgroundColor: "#DCEBF6", border: "1px solid rgba(1,64,167,0.2)" }}
+              >
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider" style={{ color: "#0140A7" }}>
+                    National ID Mandate
+                  </span>
+                  <p className="text-sm font-extrabold" style={{ color: "#0A4870" }}>Proclamation No. 1284/2023</p>
+                  <p className="text-xs leading-snug" style={{ color: "#555B63" }}>
+                    All league roster entries require 16-digit Fayda FAN ID validation.
+                  </p>
+                </div>
+                <Link href="/policy" className="text-xs font-bold hover:underline mt-2" style={{ color: "#0140A7" }}>
+                  Read Compliance Policy →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── PLATFORM FEATURES ── */}
+        <section className="space-y-8">
+          <div className="text-center space-y-2 max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-extrabold" style={{ color: "#1D1D1F" }}>
+              Core Platform Capabilities
+            </h2>
+            <p className="text-xs sm:text-sm" style={{ color: "#8B9098" }}>
+              Designed for speed, transparency, and full compliance with national identity regulations.
             </p>
           </div>
-        </div>
 
-        {/* 3 Portal Entry Cards */}
-        <div className="grid gap-6 md:grid-cols-3">
-          {/* Card 1: Athlete Portal */}
-          <Link href="/athlete/register" className="group flex">
-            <Card className="flex flex-col w-full text-left transition-all hover:border-yellow-500 hover:shadow-xl dark:hover:border-yellow-500/50 dark:hover:bg-zinc-900/10 backdrop-blur-md">
-              <CardHeader className="pb-2">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-500/10 mb-2">
-                  <svg className="h-6 w-6 text-yellow-500 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                emoji: "🆔",
+                title: "Fayda National ID Verification",
+                desc: "Seamless self-service athlete onboarding. Athletes use their 16-digit FAN ID with SMS OTP authentication to eliminate age cheating and manual paperwork.",
+                accent: "#0140A7",
+                accentBg: "#DCEBF6",
+              },
+              {
+                emoji: "🏃",
+                title: "Live Competition & Seeding",
+                desc: "Automated heat lane assignments, FinishLynx photo-finish integration, and real-time event status tracking for live national championships.",
+                accent: "#E6A500",
+                accentBg: "#FFF3CC",
+              },
+              {
+                emoji: "🏛️",
+                title: "Secure Club & Federation Portals",
+                desc: "Dedicated, isolated authentication portals for Club Officers and Federation Executives, featuring in-house athlete registration and roster audits.",
+                accent: "#0A4870",
+                accentBg: "#DCEBF6",
+              },
+            ].map((feat) => (
+              <div
+                key={feat.title}
+                className="rounded-3xl p-7 space-y-3 shadow-sm"
+                style={{ backgroundColor: "#FFFFFF", border: "1px solid #D9DEE5" }}
+              >
+                <div
+                  className="h-12 w-12 rounded-2xl flex items-center justify-center font-bold text-xl"
+                  style={{ backgroundColor: feat.accentBg }}
+                >
+                  {feat.emoji}
                 </div>
-                <CardTitle className="text-xl font-extrabold text-slate-900 dark:text-white">Athlete Portal</CardTitle>
-              </CardHeader>
-              <CardContent className="flex-1 pb-4">
-                <CardDescription className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
-                  Register with your Fayda National ID, view personal records, manage race entries, and access digital achievement badges and split times.
-                </CardDescription>
-                <div className="mt-5 flex flex-wrap gap-1.5 text-[10px] font-mono">
-                  <span className="rounded bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 text-slate-700 dark:text-zinc-400">Fayda ID Login</span>
-                  <span className="rounded bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 text-slate-700 dark:text-zinc-400">GPS Check-In</span>
-                </div>
-              </CardContent>
-              <CardFooter className="pt-2 border-t-0 bg-transparent">
-                <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-yellow-500 px-4 py-2.5 text-xs font-bold text-slate-950 transition-all group-hover:bg-yellow-400">
-                  Enter Athlete Portal
-                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </span>
-              </CardFooter>
-            </Card>
-          </Link>
+                <h3 className="text-base font-bold" style={{ color: "#1D1D1F" }}>{feat.title}</h3>
+                <p className="text-xs leading-relaxed" style={{ color: "#555B63" }}>{feat.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
-          {/* Card 2: Club Admin Member Registration Standalone Screen */}
-          <Link href="/club-admin/register" className="group flex">
-            <Card className="flex flex-col w-full text-left transition-all hover:border-blue-500 hover:shadow-xl dark:hover:border-blue-500/40 dark:hover:bg-zinc-900/10 backdrop-blur-md">
-              <CardHeader className="pb-2">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 mb-2">
-                  <svg className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <CardTitle className="text-xl font-extrabold text-slate-900 dark:text-white">Club Registry</CardTitle>
-              </CardHeader>
-              <CardContent className="flex-1 pb-4">
-                <CardDescription className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
-                  Self-service club licensing, regional sports association registration, roster management, and Fayda manager audits.
-                </CardDescription>
-                <div className="mt-5 flex flex-wrap gap-1.5 text-[10px] font-mono">
-                  <span className="rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 px-2 py-0.5">Club Licensing</span>
-                  <span className="rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 px-2 py-0.5">Roster Audits</span>
-                </div>
-              </CardContent>
-              <CardFooter className="pt-2 border-t-0 bg-transparent">
-                <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white transition-all group-hover:bg-blue-500">
-                  Register & Manage Club
-                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </span>
-              </CardFooter>
-            </Card>
-          </Link>
+        {/* ── PORTAL ACCESS CARDS ── */}
+        <section className="grid sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {/* CLUB ADMIN CARD */}
+          <div
+            className="rounded-3xl p-8 shadow-xl space-y-6 flex flex-col justify-between"
+            style={{ backgroundColor: "#FFFFFF", border: "1px solid #D9DEE5" }}
+          >
+            <div className="space-y-4">
+              <div
+                className="h-12 w-12 rounded-2xl flex items-center justify-center font-bold text-xl"
+                style={{ backgroundColor: "#FFF3CC" }}
+              >
+                🏢
+              </div>
+              <div>
+                <h3 className="text-xl font-bold" style={{ color: "#1D1D1F" }}>Club Admin Portal</h3>
+                <p className="text-xs mt-1" style={{ color: "#8B9098" }}>
+                  Access your club dashboard to register new athletes, manage rosters, approve pending applications, and view live meets.
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/club-admin/login"
+              className="w-full flex items-center justify-center gap-2 rounded-2xl p-4 text-xs font-extrabold text-white shadow-lg transition-all"
+              style={{ backgroundColor: "#E6A500" }}
+              onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#C98F00")}
+              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#E6A500")}
+            >
+              Sign In to Club Portal →
+            </Link>
+          </div>
 
-          {/* Card 3: Federation Admin Portal */}
-          <Link href="/federation/login" className="group flex">
-            <Card className="flex flex-col w-full text-left transition-all hover:border-emerald-500 hover:shadow-xl dark:hover:border-emerald-500/40 dark:hover:bg-zinc-900/10 backdrop-blur-md">
-              <CardHeader className="pb-2">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 mb-2">
-                  <svg className="h-6 w-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                  </svg>
-                </div>
-                <CardTitle className="text-xl font-extrabold text-slate-900 dark:text-white">Federation Admin</CardTitle>
-              </CardHeader>
-              <CardContent className="flex-1 pb-4">
-                <CardDescription className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
-                  Access the EAF administrative control centre to manage Fayda verification queues, events, club policy, and results.
-                </CardDescription>
-                <div className="mt-5 flex flex-wrap gap-1.5 text-[10px] font-mono">
-                  <span className="rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 px-2 py-0.5">Role Protected</span>
-                  <span className="rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 px-2 py-0.5">AES-256</span>
-                </div>
-              </CardContent>
-              <CardFooter className="pt-2 border-t-0 bg-transparent">
-                <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white transition-all group-hover:bg-emerald-500">
-                  Enter Admin Portal
-                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </span>
-              </CardFooter>
-            </Card>
-          </Link>
-        </div>
+          {/* FEDERATION PORTAL CARD */}
+          <div
+            className="rounded-3xl p-8 shadow-xl space-y-6 flex flex-col justify-between"
+            style={{ backgroundColor: "#0140A7" }}
+          >
+            <div className="space-y-4">
+              <div
+                className="h-12 w-12 rounded-2xl flex items-center justify-center font-bold text-xl"
+                style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
+              >
+                🏛️
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Federation Admin Portal</h3>
+                <p className="text-xs mt-1" style={{ color: "#DCEBF6" }}>
+                  Dedicated executive portal for national federation officials to manage club audits, age verification queues, and rule compliance.
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/federation/login"
+              className="w-full flex items-center justify-center gap-2 rounded-2xl p-4 text-xs font-extrabold shadow-lg transition-all"
+              style={{ backgroundColor: "#FFFFFF", color: "#0140A7" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#DCEBF6"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#FFFFFF"; }}
+            >
+              Go to Federation Executive Portal →
+            </Link>
+          </div>
+        </section>
+      </main>
 
-        {/* Footer status row */}
-        <div className="flex flex-wrap items-center justify-center gap-4 text-[10px] font-mono text-slate-500 dark:text-zinc-600">
-          <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Fayda API Online</span>
-          <span>·</span>
-          <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> FinishLynx Connected</span>
-          <span>·</span>
-          <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Telebirr Gateway Secured</span>
-          <span>·</span>
-          <span>TLS 1.3 · AES-256</span>
-        </div>
-      </div>
+      {/* ── FOOTER ── */}
+      <footer
+        className="py-8 px-4 text-center text-xs space-y-1"
+        style={{ borderTop: "1px solid #D9DEE5", backgroundColor: "#FFFFFF", color: "#8B9098" }}
+      >
+        <p>© 2026 Ethiopian Athletics Federation. All rights reserved.</p>
+        <p className="font-mono text-[10px]">Powered by EACRMS · Integrated with Fayda Digital National ID</p>
+      </footer>
     </div>
   );
 }

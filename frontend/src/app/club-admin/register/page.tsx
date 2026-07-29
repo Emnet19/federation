@@ -1,17 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
-
-export interface RegisteredClub {
-  id: string;
-  name: string;
-  region: string;
-  category: string;
-}
 
 export interface RosterMember {
   id: string;
@@ -21,33 +14,31 @@ export interface RosterMember {
   clubId: string;
   clubName: string;
   phone: string;
-  status: "Fayda Verified & Active" | "Pending License Review";
+  status: "Pending Approval" | "Fayda Verified & Active";
   registeredDate: string;
-  // Athlete specific
   dob?: string;
   gender?: "Male" | "Female";
   eventCategory?: string;
-  emergencyContact?: string;
-  // Coach specific
-  certificationLevel?: string;
-  specialization?: string;
-  experienceYears?: number;
-  email?: string;
 }
 
-const INITIAL_CLUBS: RegisteredClub[] = [
-  { id: "EAF-CLB-101", name: "Defence Athletics Club", region: "Addis Ababa", category: "National League" },
-  { id: "EAF-CLB-102", name: "Arada Athletics Club", region: "Addis Ababa", category: "Regional Club" },
-  { id: "EAF-CLB-103", name: "Hawassa Athletics AC", region: "Sidama", category: "Regional Club" },
-  { id: "EAF-CLB-104", name: "Oromia Police Sports Club", region: "Oromia", category: "National League" },
-];
+export interface CompetitionEvent {
+  id: string;
+  title: string;
+  status: "LIVE" | "UPCOMING";
+  category: string;
+  dateOrTime: string;
+  venue: string;
+  timingSystem: string;
+  participatingAthletes: number;
+  description: string;
+}
 
 const INITIAL_MEMBERS: RosterMember[] = [
   {
     id: "EAF-ATH-2026-101",
     memberType: "Athlete",
     fullName: "Tamirat Tola",
-    faydaId: "FIN-7712-9041",
+    faydaId: "1223 5568 9888 1011",
     clubId: "EAF-CLB-101",
     clubName: "Defence Athletics Club",
     phone: "+251 911 402 910",
@@ -56,657 +47,677 @@ const INITIAL_MEMBERS: RosterMember[] = [
     dob: "1991-08-11",
     gender: "Male",
     eventCategory: "Marathon & Road Running",
-    emergencyContact: "+251 911 000 111",
   },
   {
     id: "EAF-ATH-2026-102",
     memberType: "Athlete",
     fullName: "Letesenbet Gidey",
-    faydaId: "FIN-3382-1048",
-    clubId: "EAF-CLB-103",
-    clubName: "Hawassa Athletics AC",
+    faydaId: "3382 1048 5592 1022",
+    clubId: "EAF-CLB-102",
+    clubName: "Arada Athletics Club",
     phone: "+251 922 849 204",
     status: "Fayda Verified & Active",
     registeredDate: "2026-02-01",
     dob: "1998-03-20",
     gender: "Female",
     eventCategory: "Long Distance (5000m/10000m)",
-    emergencyContact: "+251 922 111 222",
   },
   {
-    id: "EAF-CCH-2026-201",
-    memberType: "Coach",
-    fullName: "Gemedu Dedefo",
-    faydaId: "FIN-5510-8291",
-    clubId: "EAF-CLB-101",
-    clubName: "Defence Athletics Club",
-    phone: "+251 911 392 810",
+    id: "EAF-ATH-2026-103",
+    memberType: "Athlete",
+    fullName: "Berihu Aregawi",
+    faydaId: "5512 8840 9182 3044",
+    clubId: "EAF-CLB-102",
+    clubName: "Arada Athletics Club",
+    phone: "+251 911 884 201",
     status: "Fayda Verified & Active",
-    registeredDate: "2026-01-10",
-    certificationLevel: "Master Coach (WA Level 3)",
-    specialization: "Marathon & Endurance",
-    experienceYears: 18,
-    email: "gemedu.d@athletics.et",
+    registeredDate: "2026-03-10",
+    dob: "2001-02-28",
+    gender: "Male",
+    eventCategory: "5000m / 10,000m",
+  },
+];
+
+const COMPETITION_EVENTS: CompetitionEvent[] = [
+  {
+    id: "EVT-LIVE-01",
+    title: "Ethiopian National Track & Field Championship — 10,000m Final",
+    status: "LIVE",
+    category: "Senior Men & Women",
+    dateOrTime: "In Progress (Lap 18/25)",
+    venue: "Addis Ababa National Stadium",
+    timingSystem: "FinishLynx Photo-Finish + RFID Mat",
+    participatingAthletes: 24,
+    description: "National Olympic selection final trials. Active RFID transponder tracking on lap 18.",
+  },
+  {
+    id: "EVT-LIVE-02",
+    title: "Hawassa Regional Athletics Cup — 800m Semi-Finals",
+    status: "LIVE",
+    category: "U20 Division",
+    dateOrTime: "In Progress (Heat 2)",
+    venue: "Hawassa University Stadium",
+    timingSystem: "FinishLynx Camera",
+    participatingAthletes: 16,
+    description: "Regional club championship heat qualification.",
+  },
+  {
+    id: "EVT-UPCOMING-01",
+    title: "Jan Meda International Cross Country Championship",
+    status: "UPCOMING",
+    category: "Senior & U20",
+    dateOrTime: "Aug 15, 2026 • 08:30 AM",
+    venue: "Jan Meda Grounds, Addis Ababa",
+    timingSystem: "Dual RFID Transponder Chip",
+    participatingAthletes: 120,
+    description: "World Athletics Cross Country Tour Gold series qualification meet.",
+  },
+  {
+    id: "EVT-UPCOMING-02",
+    title: "Great Ethiopian Road Race 10K Trials",
+    status: "UPCOMING",
+    category: "Open Club League",
+    dateOrTime: "Sep 02, 2026 • 07:00 AM",
+    venue: "Meskel Square, Addis Ababa",
+    timingSystem: "BibTag Transponder Timing",
+    participatingAthletes: 450,
+    description: "Annual national road race league opener.",
   },
 ];
 
 export default function StandaloneClubAdminRegisterPage() {
   const { user } = useAuth();
-  const [clubs] = useState<RegisteredClub[]>(INITIAL_CLUBS);
+  const [activeTab, setActiveTab] = useState<"dashboard" | "add-athlete" | "roster" | "events">("dashboard");
   const [members, setMembers] = useState<RosterMember[]>(INITIAL_MEMBERS);
+  const [eventsList] = useState<CompetitionEvent[]>(COMPETITION_EVENTS);
 
-  // Form Mode: "Athlete" | "Coach"
-  const [memberType, setMemberType] = useState<"Athlete" | "Coach">("Athlete");
+  // In-House Athlete Registration Form State (Requirement 1)
+  const [newAthleteName, setNewAthleteName] = useState("");
+  const [newAthleteFan, setNewAthleteFan] = useState("");
+  const [newAthleteDob, setNewAthleteDob] = useState("2003-04-12");
+  const [newAthleteGender, setNewAthleteGender] = useState<"Male" | "Female">("Male");
+  const [newAthletePhone, setNewAthletePhone] = useState("");
+  const [newAthleteCategory, setNewAthleteCategory] = useState("Long Distance (5k / 10k / Marathon)");
+  const [regSuccessMessage, setRegSuccessMessage] = useState("");
 
-  // Common Form Fields
-  const [fullName, setFullName] = useState("");
-  const [faydaId, setFaydaId] = useState("");
-  const [phone, setPhone] = useState("");
-  const [selectedClubId, setSelectedClubId] = useState<string>("EAF-CLB-101"); // Optional club association
+  // Load pending athlete submissions from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("eacrms_pending_athletes");
+      if (stored) {
+        const pendingList = JSON.parse(stored);
+        const mappedPending: RosterMember[] = pendingList.map((p: any) => ({
+          id: p.id,
+          memberType: "Athlete",
+          fullName: p.fullName,
+          faydaId: p.fanId,
+          clubId: p.clubId,
+          clubName: p.clubName,
+          phone: p.phone,
+          status: p.status || "Pending Approval",
+          registeredDate: p.issuedDate || new Date().toISOString().split("T")[0],
+          dob: p.dob,
+          gender: p.gender,
+          eventCategory: p.eventCategory,
+        }));
 
-  // Athlete Specific Fields
-  const [dob, setDob] = useState("");
-  const [gender, setGender] = useState<"Male" | "Female">("Male");
-  const [eventCategory, setEventCategory] = useState("Sprints (100m/200m/400m)");
-  const [emergencyContact, setEmergencyContact] = useState("");
-
-  // Coach Specific Fields
-  const [certificationLevel, setCertificationLevel] = useState("Level 1 World Athletics");
-  const [specialization, setSpecialization] = useState("Middle & Long Distance");
-  const [experienceYears, setExperienceYears] = useState<number>(3);
-  const [email, setEmail] = useState("");
-
-  // Validation & UI State
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMember, setSuccessMember] = useState<RosterMember | null>(null);
-
-  // Directory Filter State
-  const [searchFilter, setSearchFilter] = useState("");
-  const [roleFilter, setRoleFilter] = useState<"All" | "Athlete" | "Coach">("All");
-
-  // Auto-format Fayda ID pattern: FIN-XXXX-XXXX
-  const formatFaydaIdInput = (val: string) => {
-    const cleaned = val.toUpperCase().replace(/[^A-Z0-9]/g, "");
-    if (cleaned.startsWith("FIN")) {
-      const nums = cleaned.slice(3);
-      if (nums.length <= 4) return `FIN-${nums}`;
-      return `FIN-${nums.slice(0, 4)}-${nums.slice(4, 8)}`;
+        setMembers((prev) => {
+          const ids = new Set(prev.map((m) => m.id));
+          const newEntries = mappedPending.filter((m) => !ids.has(m.id));
+          return [...newEntries, ...prev];
+        });
+      }
+    } catch (e) {
+      console.error("Error reading pending athletes", e);
     }
-    return val.toUpperCase();
+  }, []);
+
+  // Format 16-digit FAN
+  const formatFanDigits = (val: string) => {
+    const raw = val.replace(/\D/g, "").slice(0, 16);
+    const groups = raw.match(/.{1,4}/g);
+    return groups ? groups.join(" ") : raw;
   };
 
-  // Backend Validation Engine
-  const validateForm = (): boolean => {
-    const errs: Record<string, string> = {};
-
-    // Legal Name check
-    if (!fullName.trim() || fullName.trim().length < 3) {
-      errs.fullName = "Full legal name is required (minimum 3 characters).";
-    }
-
-    // Fayda ID Regex
-    const faydaRegex = /^FIN-\d{4}-\d{4}$/;
-    if (!faydaId.trim()) {
-      errs.faydaId = "Fayda National ID is required.";
-    } else if (!faydaRegex.test(faydaId.trim())) {
-      errs.faydaId = "Invalid Fayda ID format! Format must be FIN-XXXX-XXXX (e.g. FIN-8849-2049).";
-    }
-
-    // Ethiopian Phone Regex
-    const phoneRegex = /^(\+251|0)[79]\d{8}$/;
-    const cleanPhone = phone.replace(/\s+/g, "");
-    if (!phone.trim()) {
-      errs.phone = "Contact phone number is required.";
-    } else if (!phoneRegex.test(cleanPhone)) {
-      errs.phone = "Invalid Ethiopian phone number. Example: +251 911 234 567 or 0911234567.";
-    }
-
-    if (memberType === "Athlete") {
-      // Age check >= 12 yrs
-      if (!dob) {
-        errs.dob = "Date of birth is required.";
-      } else {
-        const birthDate = new Date(dob);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-          age--;
-        }
-        if (isNaN(age) || age < 12) {
-          errs.dob = "Athlete must be at least 12 years of age for federation registration.";
-        }
-      }
-
-      if (emergencyContact.trim()) {
-        const cleanEm = emergencyContact.replace(/\s+/g, "");
-        if (!phoneRegex.test(cleanEm)) {
-          errs.emergencyContact = "Invalid emergency phone format (+251 9... or 09...).";
-        }
-      }
-    } else {
-      // Coach Specific Checks
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!email.trim()) {
-        errs.email = "Official contact email address is required.";
-      } else if (!emailRegex.test(email.trim())) {
-        errs.email = "Invalid email address format (e.g. coach@domain.et).";
-      }
-
-      if (experienceYears < 1 || isNaN(experienceYears)) {
-        errs.experienceYears = "Experience must be at least 1 year.";
-      }
-    }
-
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-
-  // Submit Handler
-  const handleSubmit = (e: React.FormEvent) => {
+  // Handle direct In-House Athlete Registration by Club Admin
+  const handleInHouseRegistration = (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccessMember(null);
+    if (!newAthleteName.trim()) return;
 
-    if (!validateForm()) return;
+    const clubName = user?.name ? user.name.replace(" Admin", "") : "Arada Athletics Club";
+    const generatedId = `EAF-ATH-2026-${Math.floor(100 + Math.random() * 900)}`;
 
-    setIsSubmitting(true);
+    const newMember: RosterMember = {
+      id: generatedId,
+      memberType: "Athlete",
+      fullName: newAthleteName.trim(),
+      faydaId: formatFanDigits(newAthleteFan) || "1223 5568 9888 4401",
+      clubId: "EAF-CLB-102",
+      clubName,
+      phone: newAthletePhone.trim() || "+251 911 000 999",
+      status: "Fayda Verified & Active",
+      registeredDate: new Date().toISOString().split("T")[0],
+      dob: newAthleteDob,
+      gender: newAthleteGender,
+      eventCategory: newAthleteCategory,
+    };
 
-    setTimeout(() => {
-      let assignedClubName = "Unattached / Independent";
-      if (selectedClubId !== "UNATTACHED") {
-        const found = clubs.find((c) => c.id === selectedClubId);
-        if (found) assignedClubName = found.name;
-      }
+    setMembers((prev) => [newMember, ...prev]);
 
-      const generatedId =
-        memberType === "Athlete"
-          ? `EAF-ATH-2026-${Math.floor(100 + Math.random() * 900)}`
-          : `EAF-CCH-2026-${Math.floor(200 + Math.random() * 900)}`;
+    // Reset form & show message
+    setNewAthleteName("");
+    setNewAthleteFan("");
+    setNewAthletePhone("");
+    setRegSuccessMessage(`Successfully registered ${newMember.fullName} directly to club roster with Fayda FAN ID ${newMember.faydaId}!`);
 
-      const newMember: RosterMember = {
-        id: generatedId,
-        memberType,
-        fullName: fullName.trim(),
-        faydaId: faydaId.trim(),
-        clubId: selectedClubId,
-        clubName: assignedClubName,
-        phone: phone.trim(),
-        status: "Fayda Verified & Active",
-        registeredDate: new Date().toISOString().split("T")[0],
-        ...(memberType === "Athlete"
-          ? { dob, gender, eventCategory, emergencyContact: emergencyContact.trim() || undefined }
-          : { certificationLevel, specialization, experienceYears, email: email.trim() }),
-      };
-
-      setMembers((prev) => [newMember, ...prev]);
-      setIsSubmitting(false);
-      setSuccessMember(newMember);
-
-      // Reset form
-      setFullName("");
-      setFaydaId("");
-      setPhone("");
-      setDob("");
-      setEmergencyContact("");
-      setEmail("");
-      setErrors({});
-    }, 1200);
+    setTimeout(() => setRegSuccessMessage(""), 5000);
   };
 
-  const filteredMembers = members.filter((m) => {
-    const matchesSearch =
-      m.fullName.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      m.faydaId.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      m.id.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      m.clubName.toLowerCase().includes(searchFilter.toLowerCase());
+  // Approve a pending athlete
+  const handleApproveAthlete = (id: string) => {
+    setMembers((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, status: "Fayda Verified & Active" } : m))
+    );
+  };
 
-    const matchesRole = roleFilter === "All" || m.memberType === roleFilter;
-    return matchesSearch && matchesRole;
-  });
+  const currentClubName = user?.name ? user.name.replace(" Admin", "") : "Arada Athletics Club";
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-200">
-      {/* STANDALONE CLUB ADMIN TOP NAVBAR */}
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/80 dark:border-zinc-800/80 dark:bg-zinc-900/60 backdrop-blur-xl px-6 py-3.5">
+      {/* HEADER */}
+      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 dark:border-zinc-800/80 dark:bg-zinc-900/80 backdrop-blur-xl px-4 sm:px-8 py-3.5">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white border border-slate-200 dark:bg-zinc-900 dark:border-zinc-800 p-1 shadow-md">
-              <Image src="/logo.png" alt="EAF Logo" fill className="object-contain" priority />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">
-                  Club Registration Portal
-                </span>
-                <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                  New Club Application
-                </span>
+            <Link href="/" className="flex items-center gap-3">
+              <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-xl bg-white border border-slate-200 dark:bg-zinc-900 dark:border-zinc-800 p-1 shadow-sm">
+                <Image src="/logo.png" alt="EAF Logo" fill className="object-contain" priority />
               </div>
-              <p className="text-[10px] text-slate-500 dark:text-zinc-400 font-mono">
-                Ethiopian Athletics Federation · Proclamation No. 1284/2023 Compliant
-              </p>
-            </div>
+              <div>
+                <h1 className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">
+                  Club Admin Portal
+                </h1>
+                <p className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                  {currentClubName}
+                </p>
+              </div>
+            </Link>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-mono font-semibold text-emerald-700 dark:text-emerald-400">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Fayda Verified Gateway
-            </div>
-
+          <div className="flex items-center gap-3">
             <ThemeToggle />
-
             <Link
               href="/"
-              className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-xs font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-200 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-200 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 transition-all"
             >
-              ← Back to Portal Hub
+              Sign Out
             </Link>
           </div>
         </div>
       </header>
 
-      {/* PAGE CONTAINER */}
-      <main className="mx-auto max-w-7xl px-6 py-8 space-y-8">
-        {/* WELCOME BANNER */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Athletics Club Registration
-            </h1>
-            <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
-              Register your athletics club with the Ethiopian Athletics Federation. Complete the form below — your application will be reviewed and verified by EAF administrators.
-            </p>
+      {/* DASHBOARD CONTAINER */}
+      <main className="mx-auto max-w-7xl px-4 sm:px-8 py-8 space-y-8">
+
+        {/* TAB NAVIGATION BAR */}
+        <div className="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-4 gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* 1. Dashboard Tab */}
+            <button
+              onClick={() => setActiveTab("dashboard")}
+              className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-extrabold transition-all ${
+                activeTab === "dashboard"
+                  ? "bg-slate-900 text-white dark:bg-zinc-100 dark:text-slate-900 shadow-md"
+                  : "bg-slate-100 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              📊 Dashboard
+            </button>
+
+            {/* 2. In-House Register Athlete Tab */}
+            <button
+              onClick={() => setActiveTab("add-athlete")}
+              className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-extrabold transition-all ${
+                activeTab === "add-athlete"
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "bg-slate-100 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              ➕ Register New Athlete
+            </button>
+
+            {/* 3. Club Roster Tab */}
+            <button
+              onClick={() => setActiveTab("roster")}
+              className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-extrabold transition-all ${
+                activeTab === "roster"
+                  ? "bg-emerald-600 text-white shadow-md"
+                  : "bg-slate-100 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              👥 Club Roster & Applications
+              {members.filter((m) => m.status === "Pending Approval").length > 0 && (
+                <span className="rounded-full bg-yellow-400 px-2 py-0.5 text-[10px] font-black text-slate-950">
+                  {members.filter((m) => m.status === "Pending Approval").length}
+                </span>
+              )}
+            </button>
+
+            {/* 4. Events Tab */}
+            <button
+              onClick={() => setActiveTab("events")}
+              className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-extrabold transition-all ${
+                activeTab === "events"
+                  ? "bg-emerald-600 text-white shadow-md"
+                  : "bg-slate-100 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              🏆 Live & Upcoming Events
+              <span className="flex h-2 w-2 rounded-full bg-red-500 animate-ping" />
+            </button>
           </div>
         </div>
 
-        {/* SUCCESS CONFIRMATION STATE */}
-        {successMember && (
-          <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-6 text-slate-900 dark:text-white shadow-lg space-y-4 animate-fadeIn">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-white font-bold text-lg shadow-md">
-                  ✓
-                </div>
-                <div>
-                  <h3 className="text-base font-extrabold text-emerald-800 dark:text-emerald-300">
-                    {successMember.memberType} Successfully Registered & Fayda Verified!
-                  </h3>
-                  <p className="text-xs text-slate-600 dark:text-zinc-300 font-mono mt-0.5">
-                    Proclamation No. 1284/2023 National Identity Registry Validation Passed
-                  </p>
-                </div>
+        {/* 1. SIMPLE OVERVIEW DASHBOARD (REQUIREMENT 1) */}
+        {activeTab === "dashboard" && (
+          <div className="space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+                  {currentClubName} Dashboard
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-zinc-400">
+                  Overview of active athletes, pending registrations, and live competition meets.
+                </p>
               </div>
+
               <button
-                onClick={() => setSuccessMember(null)}
-                className="text-xs text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-white font-bold"
+                onClick={() => setActiveTab("add-athlete")}
+                className="rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-4 py-2.5 text-xs shadow-md transition-all shrink-0"
               >
-                ✕ Close
+                + Register Athlete to Club Roster
               </button>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 rounded-xl bg-white/80 dark:bg-zinc-950/80 p-4 border border-emerald-500/20 text-xs">
-              <div>
-                <span className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase font-mono block">EAF Badge ID</span>
-                <span className="font-bold font-mono text-emerald-600 dark:text-emerald-400 text-sm">{successMember.id}</span>
+            {/* STAT METRIC CARDS */}
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/60 shadow-sm space-y-2">
+                <p className="text-xs font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Total Club Athletes</p>
+                <p className="text-3xl font-extrabold text-slate-900 dark:text-white">{members.length}</p>
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Active Roster License</p>
               </div>
-              <div>
-                <span className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase font-mono block">Member Name</span>
-                <span className="font-bold text-slate-900 dark:text-zinc-100">{successMember.fullName}</span>
+
+              <div className="rounded-2xl border border-blue-500/20 bg-blue-500/5 p-6 shadow-sm space-y-2">
+                <p className="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider">Fayda ID Verified</p>
+                <p className="text-3xl font-extrabold text-blue-700 dark:text-blue-400">
+                  {members.filter((m) => m.status === "Fayda Verified & Active").length}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-zinc-400 font-mono">16-Digit FAN Validated</p>
               </div>
-              <div>
-                <span className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase font-mono block">Fayda National ID</span>
-                <span className="font-bold font-mono text-slate-700 dark:text-zinc-300">{successMember.faydaId}</span>
+
+              <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-6 shadow-sm space-y-2">
+                <p className="text-xs font-bold text-yellow-700 dark:text-yellow-400 uppercase tracking-wider">Pending Approvals</p>
+                <p className="text-3xl font-extrabold text-yellow-700 dark:text-yellow-400">
+                  {members.filter((m) => m.status === "Pending Approval").length}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-zinc-400">Awaiting Club Review</p>
               </div>
-              <div>
-                <span className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase font-mono block">Club Roster</span>
-                <span className="font-bold text-blue-600 dark:text-blue-400">{successMember.clubName}</span>
+
+              <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6 shadow-sm space-y-2">
+                <p className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">Active Competitions</p>
+                <p className="text-3xl font-extrabold text-red-600 dark:text-red-400">
+                  {eventsList.filter((e) => e.status === "LIVE").length} LIVE
+                </p>
+                <p className="text-xs text-slate-500 dark:text-zinc-400">In Progress Meets</p>
+              </div>
+            </div>
+
+            {/* QUICK OVERVIEW GRID */}
+            <div className="grid lg:grid-cols-12 gap-8">
+              {/* RECENT ATHLETES SUMMARY */}
+              <div className="lg:col-span-7 rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/40 p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Recent Athlete Entries</h3>
+                  <button onClick={() => setActiveTab("roster")} className="text-xs font-bold text-blue-600 dark:text-cyan-400 hover:underline">
+                    View Full Roster →
+                  </button>
+                </div>
+
+                <div className="divide-y divide-slate-100 dark:divide-zinc-800 text-xs">
+                  {members.slice(0, 4).map((m) => (
+                    <div key={m.id} className="py-3 flex items-center justify-between">
+                      <div>
+                        <p className="font-bold text-slate-900 dark:text-white">{m.fullName}</p>
+                        <p className="text-[11px] font-mono text-slate-500 dark:text-zinc-400">FAN: {m.faydaId}</p>
+                      </div>
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold font-mono ${
+                        m.status === "Pending Approval"
+                          ? "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400"
+                          : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                      }`}>
+                        {m.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* LIVE EVENTS WIDGET */}
+              <div className="lg:col-span-5 rounded-3xl border border-red-500/20 bg-gradient-to-br from-red-500/5 to-white dark:to-zinc-900 p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-ping" />
+                    <h3 className="text-base font-extrabold text-slate-900 dark:text-white">Live Event Status</h3>
+                  </div>
+                  <button onClick={() => setActiveTab("events")} className="text-xs font-bold text-red-600 dark:text-red-400 hover:underline">
+                    All Events →
+                  </button>
+                </div>
+
+                {eventsList.filter((e) => e.status === "LIVE").slice(0, 1).map((ev) => (
+                  <div key={ev.id} className="space-y-3 text-xs">
+                    <p className="font-extrabold text-slate-900 dark:text-white">{ev.title}</p>
+                    <p className="text-slate-600 dark:text-zinc-400">{ev.description}</p>
+                    <div className="p-3 rounded-xl bg-white dark:bg-zinc-950 font-mono text-[11px] space-y-1">
+                      <p className="text-slate-500">📍 Venue: {ev.venue}</p>
+                      <p className="text-emerald-600 dark:text-emerald-400 font-bold">⏱ Hardware: {ev.timingSystem}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         )}
 
-        {/* MAIN LAYOUT: REGISTRATION FORM ONLY */}
-        <div className="mx-auto max-w-3xl">
-          {/* REGISTRATION FORM CONTAINER */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-7 dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-md space-y-6 shadow-sm">
-            {/* Header & Switcher */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-zinc-800 pb-5 gap-3">
-              <div>
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold">
-                    +
-                  </span>
-                  Club Admin Member Form
-                </h2>
-                <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
-                  Select registration mode below to onboard athletes or coaches.
-                </p>
-              </div>
+        {/* 2. IN-HOUSE ATHLETE REGISTRATION SECTION (REQUIREMENT 1) */}
+        {activeTab === "add-athlete" && (
+          <div className="mx-auto max-w-2xl space-y-6">
+            <div className="space-y-1">
+              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+                In-House Athlete Registration
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">
+                Register new athletes directly into the <strong>{currentClubName}</strong> official roster using their Fayda National ID (FAN).
+              </p>
+            </div>
 
-              {/* Mode Switcher */}
-              <div className="flex rounded-xl bg-slate-100 dark:bg-zinc-950 p-1 border border-slate-200 dark:border-zinc-800">
+            {regSuccessMessage && (
+              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+                ✓ {regSuccessMessage}
+              </div>
+            )}
+
+            <div className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/80 backdrop-blur-xl p-8 shadow-xl space-y-6">
+              <form onSubmit={handleInHouseRegistration} className="space-y-4 text-xs">
+                {/* Athlete Name */}
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                    Athlete Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={newAthleteName}
+                    onChange={(e) => setNewAthleteName(e.target.value)}
+                    placeholder="e.g. Derartu Tulu"
+                    required
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:border-blue-600 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                {/* Fayda FAN ID */}
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                    Fayda Access Number (FAN ID - 16 Digits)
+                  </label>
+                  <input
+                    type="text"
+                    value={formatFanDigits(newAthleteFan)}
+                    onChange={(e) => setNewAthleteFan(e.target.value)}
+                    placeholder="1223 5568 9888 8565"
+                    maxLength={19}
+                    required
+                    className="w-full font-mono text-sm tracking-wider rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:border-blue-600 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                {/* DOB & Gender */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                      Date of Birth
+                    </label>
+                    <input
+                      type="date"
+                      value={newAthleteDob}
+                      onChange={(e) => setNewAthleteDob(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:border-blue-600 focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                      Gender
+                    </label>
+                    <select
+                      value={newAthleteGender}
+                      onChange={(e) => setNewAthleteGender(e.target.value as "Male" | "Female")}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:border-blue-600 focus:outline-none transition-colors"
+                    >
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                    Contact Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={newAthletePhone}
+                    onChange={(e) => setNewAthletePhone(e.target.value)}
+                    placeholder="0911238066"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:border-blue-600 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                {/* Event Category */}
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                    Event Category Specialization
+                  </label>
+                  <select
+                    value={newAthleteCategory}
+                    onChange={(e) => setNewAthleteCategory(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:border-blue-600 focus:outline-none transition-colors"
+                  >
+                    <option value="Sprints (100m / 200m / 400m)">Sprints (100m / 200m / 400m)</option>
+                    <option value="Middle Distance (800m / 1500m)">Middle Distance (800m / 1500m)</option>
+                    <option value="Long Distance (5k / 10k / Marathon)">Long Distance (5k / 10k / Marathon)</option>
+                    <option value="Field Events (Jumps / Throws)">Field Events (Jumps / Throws)</option>
+                  </select>
+                </div>
+
                 <button
-                  type="button"
-                  onClick={() => { setMemberType("Athlete"); setErrors({}); }}
-                  className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all ${
-                    memberType === "Athlete"
-                      ? "bg-yellow-500 text-slate-950 shadow-sm"
-                      : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
-                  }`}
+                  type="submit"
+                  className="w-full rounded-xl bg-blue-600 hover:bg-blue-500 p-3.5 text-sm font-extrabold text-white shadow-lg transition-all"
                 >
-                  🏃 Athlete Registration
+                  Register Athlete to Club Roster
                 </button>
-                <button
-                  type="button"
-                  onClick={() => { setMemberType("Coach"); setErrors({}); }}
-                  className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all ${
-                    memberType === "Coach"
-                      ? "bg-blue-600 text-white shadow-sm"
-                      : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
-                  }`}
-                >
-                  📋 Coach Registration
-                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* 3. CLUB ROSTER TAB */}
+        {activeTab === "roster" && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Athletes Roster Management</h2>
+                <p className="text-xs text-slate-500 dark:text-zinc-400">
+                  Approve pending athlete self-service submissions or manage existing club licenses.
+                </p>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-              {/* OPTIONAL CLUB ASSOCIATION SELECT */}
-              <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="block font-bold text-slate-800 dark:text-zinc-200">
-                    Optional Club Association
-                  </label>
-                  <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 font-semibold">
-                    Shown on EAF Roster
-                  </span>
-                </div>
-                <select
-                  value={selectedClubId}
-                  onChange={(e) => setSelectedClubId(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-blue-500 focus:outline-none font-medium"
-                >
-                  {clubs.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name} ({c.region} · {c.category})
-                    </option>
-                  ))}
-                  <option value="UNATTACHED">Unattached / Independent Member</option>
-                </select>
-                <p className="text-[10px] text-slate-500 dark:text-zinc-400">
-                  Select the club to associate this {memberType.toLowerCase()} with, or choose &quot;Unattached / Independent&quot;.
-                </p>
-              </div>
-
-              {/* Full Legal Name */}
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                  Full Legal Name *
-                </label>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder={memberType === "Athlete" ? "e.g. Tamirat Tola" : "e.g. Gemedu Dedefo"}
-                  className={`w-full rounded-xl border px-4 py-2.5 text-slate-900 placeholder-slate-400 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:outline-none ${
-                    errors.fullName
-                      ? "border-red-500 bg-red-500/5 focus:border-red-500"
-                      : "border-slate-200 bg-slate-50 dark:border-zinc-800 focus:border-blue-500"
-                  }`}
-                />
-                {errors.fullName ? (
-                  <p className="mt-1 text-[11px] font-semibold text-red-500">{errors.fullName}</p>
-                ) : (
-                  <p className="mt-1 text-[10px] text-slate-500 dark:text-zinc-500">
-                    Must match full legal name registered on Fayda National ID card.
-                  </p>
-                )}
-              </div>
-
-              {/* Fayda ID & Phone Grid */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                    Fayda National ID *
-                  </label>
-                  <input
-                    type="text"
-                    value={faydaId}
-                    onChange={(e) => setFaydaId(formatFaydaIdInput(e.target.value))}
-                    placeholder="FIN-8849-2049"
-                    maxLength={13}
-                    className={`w-full rounded-xl border px-4 py-2.5 font-mono text-slate-900 placeholder-slate-400 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:outline-none ${
-                      errors.faydaId
-                        ? "border-red-500 bg-red-500/5 focus:border-red-500"
-                        : "border-slate-200 bg-slate-50 dark:border-zinc-800 focus:border-blue-500"
-                    }`}
-                  />
-                  {errors.faydaId ? (
-                    <p className="mt-1 text-[11px] font-semibold text-red-500">{errors.faydaId}</p>
-                  ) : (
-                    <p className="mt-1 text-[10px] text-slate-500 dark:text-zinc-500 font-mono">
-                      Format: FIN-XXXX-XXXX (Proclamation No. 1284/2023)
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                    Contact Phone Number *
-                  </label>
-                  <input
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+251 911 234 567"
-                    className={`w-full rounded-xl border px-4 py-2.5 text-slate-900 placeholder-slate-400 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:outline-none ${
-                      errors.phone
-                        ? "border-red-500 bg-red-500/5 focus:border-red-500"
-                        : "border-slate-200 bg-slate-50 dark:border-zinc-800 focus:border-blue-500"
-                    }`}
-                  />
-                  {errors.phone ? (
-                    <p className="mt-1 text-[11px] font-semibold text-red-500">{errors.phone}</p>
-                  ) : (
-                    <p className="mt-1 text-[10px] text-slate-500 dark:text-zinc-500 font-mono">
-                      Format: +251 911 234 567 or 0911234567
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* ATHLETE SPECIFIC FIELDS */}
-              {memberType === "Athlete" ? (
-                <>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                        Date of Birth *
-                      </label>
-                      <input
-                        type="date"
-                        value={dob}
-                        onChange={(e) => setDob(e.target.value)}
-                        className={`w-full rounded-xl border px-4 py-2 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 focus:outline-none font-mono ${
-                          errors.dob
-                            ? "border-red-500 bg-red-500/5 focus:border-red-500"
-                            : "border-slate-200 bg-slate-50 dark:border-zinc-800 focus:border-blue-500"
-                        }`}
-                      />
-                      {errors.dob ? (
-                        <p className="mt-1 text-[11px] font-semibold text-red-500">{errors.dob}</p>
-                      ) : (
-                        <p className="mt-1 text-[10px] text-slate-500 dark:text-zinc-500">
-                          Athlete must be at least 12 years of age.
-                        </p>
-                      )}
+            {/* MEMBERS TABLE */}
+            <div className="rounded-2xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/40 overflow-hidden shadow-sm">
+              <div className="divide-y divide-slate-100 dark:divide-zinc-800">
+                {members.map((member) => (
+                  <div key={member.id} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/60 dark:hover:bg-zinc-900/60 transition-colors">
+                    <div className="flex items-start gap-4">
+                      <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-zinc-800 flex items-center justify-center font-bold text-sm text-slate-700 dark:text-zinc-300 shrink-0">
+                        {member.fullName.split(" ").map((n) => n[0]).join("")}
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-bold text-slate-900 dark:text-white">{member.fullName}</p>
+                          <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono border ${
+                            member.status === "Pending Approval"
+                              ? "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20"
+                              : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
+                          }`}>
+                            {member.status}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3 text-[11px] font-mono text-slate-500 dark:text-zinc-400">
+                          <span>FAN: {member.faydaId}</span>
+                          <span>•</span>
+                          <span>Club: {member.clubName}</span>
+                          {member.eventCategory && (
+                            <>
+                              <span>•</span>
+                              <span>{member.eventCategory}</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
-                    <div>
-                      <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                        Gender Category *
-                      </label>
-                      <select
-                        value={gender}
-                        onChange={(e) => setGender(e.target.value as "Male" | "Female")}
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-blue-500 focus:outline-none"
-                      >
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                      Primary Event Category *
-                    </label>
-                    <select
-                      value={eventCategory}
-                      onChange={(e) => setEventCategory(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-blue-500 focus:outline-none"
-                    >
-                      <option value="Sprints (100m/200m/400m)">Sprints (100m / 200m / 400m)</option>
-                      <option value="Middle Distance (800m/1500m)">Middle Distance (800m / 1500m)</option>
-                      <option value="Long Distance (5000m/10000m)">Long Distance (5000m / 10000m)</option>
-                      <option value="Marathon & Road Running">Marathon & Road Running</option>
-                      <option value="3000m Steeplechase">3000m Steeplechase</option>
-                      <option value="Jumps & Throws">Jumps & Throws</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                      Emergency Contact Phone (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={emergencyContact}
-                      onChange={(e) => setEmergencyContact(e.target.value)}
-                      placeholder="+251 911 000 111"
-                      className={`w-full rounded-xl border px-4 py-2.5 text-slate-900 placeholder-slate-400 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:outline-none ${
-                        errors.emergencyContact
-                          ? "border-red-500 bg-red-500/5 focus:border-red-500"
-                          : "border-slate-200 bg-slate-50 dark:border-zinc-800 focus:border-blue-500"
-                      }`}
-                    />
-                    {errors.emergencyContact && (
-                      <p className="mt-1 text-[11px] font-semibold text-red-500">{errors.emergencyContact}</p>
+                    {member.status === "Pending Approval" && (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleApproveAthlete(member.id)}
+                          className="rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-emerald-500 transition-colors shadow-sm"
+                        >
+                          Approve License
+                        </button>
+                      </div>
                     )}
                   </div>
-                </>
-              ) : (
-                /* COACH SPECIFIC FIELDS */
-                <>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                        Certification Level *
-                      </label>
-                      <select
-                        value={certificationLevel}
-                        onChange={(e) => setCertificationLevel(e.target.value)}
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-blue-500 focus:outline-none"
-                      >
-                        <option value="Level 1 World Athletics">Level 1 World Athletics</option>
-                        <option value="Level 2 WA National Coach">Level 2 WA National Coach</option>
-                        <option value="Master Coach (WA Level 3)">Master Coach (WA Level 3)</option>
-                        <option value="Youth Academy Coach">Youth Academy Coach</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                        Coaching Discipline *
-                      </label>
-                      <select
-                        value={specialization}
-                        onChange={(e) => setSpecialization(e.target.value)}
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 focus:border-blue-500 focus:outline-none"
-                      >
-                        <option value="Middle & Long Distance">Middle & Long Distance</option>
-                        <option value="Marathon & Endurance">Marathon & Endurance</option>
-                        <option value="Sprints & Hurdles">Sprints & Hurdles</option>
-                        <option value="Jumps & Throws">Jumps & Throws</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                        Official Email Address *
-                      </label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="coach.name@athletics.et"
-                        className={`w-full rounded-xl border px-4 py-2.5 text-slate-900 placeholder-slate-400 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder-zinc-600 focus:outline-none ${
-                          errors.email
-                            ? "border-red-500 bg-red-500/5 focus:border-red-500"
-                            : "border-slate-200 bg-slate-50 dark:border-zinc-800 focus:border-blue-500"
-                        }`}
-                      />
-                      {errors.email ? (
-                        <p className="mt-1 text-[11px] font-semibold text-red-500">{errors.email}</p>
-                      ) : (
-                        <p className="mt-1 text-[10px] text-slate-500 dark:text-zinc-500">
-                          Official contact for license credentials.
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                        Coaching Experience (Years) *
-                      </label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={50}
-                        value={experienceYears}
-                        onChange={(e) => setExperienceYears(parseInt(e.target.value) || 0)}
-                        className={`w-full rounded-xl border px-4 py-2.5 text-slate-900 font-mono dark:bg-zinc-950 dark:text-zinc-100 focus:outline-none ${
-                          errors.experienceYears
-                            ? "border-red-500 bg-red-500/5 focus:border-red-500"
-                            : "border-slate-200 bg-slate-50 dark:border-zinc-800 focus:border-blue-500"
-                        }`}
-                      />
-                      {errors.experienceYears && (
-                        <p className="mt-1 text-[11px] font-semibold text-red-500">{errors.experienceYears}</p>
-                      )}
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* SUBMIT BUTTON WITH ANIMATED LOADING */}
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 ${
-                    memberType === "Athlete"
-                      ? "bg-yellow-500 hover:bg-yellow-400 text-slate-950 shadow-yellow-500/20"
-                      : "bg-blue-600 hover:bg-blue-500 shadow-blue-500/20"
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                      Verifying Fayda National ID & Registering...
-                    </>
-                  ) : (
-                    `Complete ${memberType} Registration`
-                  )}
-                </button>
+                ))}
               </div>
-            </form>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* 4. LIVE & UPCOMING EVENTS TAB */}
+        {activeTab === "events" && (
+          <div className="space-y-8">
+            {/* LIVE EVENTS SECTION */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="flex h-3 w-3 rounded-full bg-red-500 animate-ping" />
+                <h2 className="text-lg font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
+                  Live Events (In Progress)
+                </h2>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {eventsList
+                  .filter((e) => e.status === "LIVE")
+                  .map((ev) => (
+                    <div
+                      key={ev.id}
+                      className="rounded-3xl border border-red-500/30 bg-gradient-to-br from-red-500/5 via-white to-white dark:via-zinc-900 dark:to-zinc-950 p-6 shadow-md space-y-4 relative overflow-hidden"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-[11px] font-bold text-red-600 dark:text-red-400 border border-red-500/20 font-mono">
+                          🔴 LIVE NOW
+                        </span>
+                        <span className="text-[11px] font-mono text-slate-500 dark:text-zinc-400">
+                          {ev.dateOrTime}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                          {ev.title}
+                        </h3>
+                        <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1 leading-relaxed">
+                          {ev.description}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-[11px] font-mono pt-3 border-t border-slate-200 dark:border-zinc-800">
+                        <div>
+                          <span className="text-slate-500 dark:text-zinc-500 block">Venue:</span>
+                          <span className="font-bold text-slate-800 dark:text-zinc-200">{ev.venue}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-500 dark:text-zinc-500 block">Timing Hardware:</span>
+                          <span className="font-bold text-emerald-600 dark:text-emerald-400">{ev.timingSystem}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
+            {/* UPCOMING EVENTS SECTION */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-blue-500" />
+                <h2 className="text-lg font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
+                  Upcoming Events & Competitions
+                </h2>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {eventsList
+                  .filter((e) => e.status === "UPCOMING")
+                  .map((ev) => (
+                    <div
+                      key={ev.id}
+                      className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/60 p-6 shadow-sm space-y-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 px-3 py-1 text-[11px] font-bold text-blue-700 dark:text-blue-400 border border-blue-500/20 font-mono">
+                          📅 UPCOMING
+                        </span>
+                        <span className="text-[11px] font-mono text-slate-500 dark:text-zinc-400">
+                          {ev.dateOrTime}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                          {ev.title}
+                        </h3>
+                        <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1 leading-relaxed">
+                          {ev.description}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-[11px] font-mono pt-3 border-t border-slate-200 dark:border-zinc-800">
+                        <div>
+                          <span className="text-slate-500 dark:text-zinc-500 block">Venue:</span>
+                          <span className="font-bold text-slate-800 dark:text-zinc-200">{ev.venue}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-500 dark:text-zinc-500 block">Timing System:</span>
+                          <span className="font-bold text-slate-800 dark:text-zinc-200">{ev.timingSystem}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        )}
+
       </main>
     </div>
   );

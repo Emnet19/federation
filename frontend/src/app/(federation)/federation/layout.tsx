@@ -9,7 +9,6 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { AuthGuard } from "@/components/common/AuthGuard";
-import { ThemeToggle } from "@/components/common/ThemeToggle";
 
 export default function FederationLayout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
@@ -17,7 +16,7 @@ export default function FederationLayout({ children }: { children: React.ReactNo
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const isLoginPage = pathname === "/federation/login";
+  const isLoginPage = pathname === "/federation/login" || pathname === "/";
 
   const allNavItems = [
     {
@@ -85,13 +84,19 @@ export default function FederationLayout({ children }: { children: React.ReactNo
     },
   ];
 
-  const navItems = user?.role === "Club Admin"
-    ? allNavItems.filter((item) => item.href === "/federation" || item.href === "/federation/clubs" || item.href === "/federation/clubs/members")
-    : allNavItems;
+  const navItems =
+    user?.role === "Club Admin"
+      ? allNavItems.filter(
+          (item) =>
+            item.href === "/federation" ||
+            item.href === "/federation/clubs" ||
+            item.href === "/federation/clubs/members"
+        )
+      : allNavItems;
 
   const handleLogout = () => {
     logout();
-    router.push("/federation/login");
+    router.push("/");
   };
 
   const initials = user?.name ? user.name.split(" ").map((n) => n[0]).join("") : "A";
@@ -103,32 +108,70 @@ export default function FederationLayout({ children }: { children: React.ReactNo
 
   return (
     <AuthGuard>
-      <div className="flex min-h-screen bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-200">
-        {/* Sidebar */}
-        <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white dark:border-zinc-800/80 dark:bg-zinc-900/50 backdrop-blur-md md:flex md:flex-col">
-          {/* Sidebar Logo Header */}
-          <div className="flex h-16 items-center gap-3 border-b border-slate-200 dark:border-zinc-800/80 px-6">
-            <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg bg-slate-100 border border-slate-200 dark:bg-zinc-900 dark:border-zinc-800 p-0.5">
+      <div className="flex min-h-screen" style={{ backgroundColor: "#F7F8FA", color: "#1D1D1F" }}>
+
+        {/* ── SIDEBAR ── */}
+        <aside
+          className="hidden w-64 shrink-0 md:flex md:flex-col"
+          style={{
+            backgroundColor: "#FFFFFF",
+            borderRight: "1px solid #D9DEE5",
+          }}
+        >
+          {/* Logo Header */}
+          <div
+            className="flex h-16 items-center gap-3 px-6"
+            style={{ borderBottom: "1px solid #D9DEE5" }}
+          >
+            <div
+              className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg p-0.5"
+              style={{ backgroundColor: "#F7F8FA", border: "1px solid #D9DEE5" }}
+            >
               <Image src="/logo.png" alt="EAF Logo" fill className="object-contain" />
             </div>
             <div className="min-w-0">
-              <span className="block text-sm font-bold tracking-wide text-slate-900 dark:text-white truncate">EACRMS Admin</span>
-              <span className="block text-[10px] text-slate-500 dark:text-zinc-500 font-medium">EAF Official Portal</span>
+              <span className="block text-sm font-bold tracking-wide truncate" style={{ color: "#1D1D1F" }}>
+                EACRMS Admin
+              </span>
+              <span className="block text-[10px] font-medium" style={{ color: "#8B9098" }}>
+                EAF Official Portal
+              </span>
             </div>
           </div>
 
-          <nav className="flex-1 space-y-1.5 px-4 py-6">
+          {/* Nav */}
+          <nav className="flex-1 space-y-1 px-3 py-5">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 active:scale-[0.98] border ${
+                  className="flex items-center gap-3.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-[0.98]"
+                  style={
                     isActive
-                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 shadow-sm"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-200 border-transparent"
-                  }`}
+                      ? {
+                          backgroundColor: "#DCEBF6",
+                          color: "#0140A7",
+                          border: "1px solid rgba(1,64,167,0.15)",
+                        }
+                      : {
+                          color: "#555B63",
+                          border: "1px solid transparent",
+                        }
+                  }
+                  onMouseEnter={e => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = "#F1F3F5";
+                      (e.currentTarget as HTMLElement).style.color = "#1D1D1F";
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                      (e.currentTarget as HTMLElement).style.color = "#555B63";
+                    }
+                  }}
                 >
                   {item.icon}
                   {item.name}
@@ -137,20 +180,31 @@ export default function FederationLayout({ children }: { children: React.ReactNo
             })}
           </nav>
 
-          <div className="border-t border-slate-200 dark:border-zinc-800/80 p-4 bg-slate-50/50 dark:bg-zinc-900/30">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-bold border border-emerald-500/20">
+          {/* User Footer */}
+          <div className="p-4" style={{ borderTop: "1px solid #D9DEE5", backgroundColor: "#F7F8FA" }}>
+            <div className="flex items-center gap-3 mb-4">
+              <div
+                className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold text-white shrink-0"
+                style={{ backgroundColor: "#0140A7" }}
+              >
                 {initials}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="truncate text-xs font-bold text-slate-800 dark:text-zinc-200">{user?.name}</p>
-                <p className="truncate text-[10px] text-slate-500 dark:text-zinc-500 font-mono">{user?.role}</p>
+                <p className="truncate text-xs font-bold" style={{ color: "#1D1D1F" }}>{user?.name}</p>
+                <p className="truncate text-[10px] font-mono" style={{ color: "#8B9098" }}>{user?.role}</p>
               </div>
             </div>
-            <div className="mt-4 flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
               <Link
                 href="/"
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 py-2 text-xs font-bold text-slate-700 dark:text-zinc-300 transition-all hover:bg-slate-100 dark:hover:bg-zinc-800"
+                className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-bold transition-all"
+                style={{
+                  border: "1px solid #D9DEE5",
+                  backgroundColor: "#FFFFFF",
+                  color: "#555B63",
+                }}
+                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#F1F3F5")}
+                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#FFFFFF")}
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -159,7 +213,22 @@ export default function FederationLayout({ children }: { children: React.ReactNo
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-zinc-800 bg-transparent py-2 text-xs font-bold text-slate-600 dark:text-zinc-400 transition-all hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-600 dark:hover:text-red-400"
+                className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-bold transition-all"
+                style={{
+                  border: "1px solid #D9DEE5",
+                  backgroundColor: "transparent",
+                  color: "#555B63",
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(211,47,47,0.06)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(211,47,47,0.3)";
+                  (e.currentTarget as HTMLElement).style.color = "#D32F2F";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                  (e.currentTarget as HTMLElement).style.borderColor = "#D9DEE5";
+                  (e.currentTarget as HTMLElement).style.color = "#555B63";
+                }}
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -170,12 +239,22 @@ export default function FederationLayout({ children }: { children: React.ReactNo
           </div>
         </aside>
 
-        {/* Main Panel */}
+        {/* ── MAIN PANEL ── */}
         <div className="flex flex-1 flex-col min-w-0">
           {/* Header */}
-          <header className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/20 px-6 backdrop-blur-md">
+          <header
+            className="flex h-16 items-center justify-between px-6 backdrop-blur-md"
+            style={{
+              borderBottom: "1px solid #D9DEE5",
+              backgroundColor: "rgba(255,255,255,0.92)",
+            }}
+          >
+            {/* Mobile: hamburger + logo */}
             <div className="flex items-center gap-4 md:hidden">
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                style={{ color: "#555B63" }}
+              >
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   {mobileMenuOpen
                     ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -184,23 +263,32 @@ export default function FederationLayout({ children }: { children: React.ReactNo
                 </svg>
               </button>
               <div className="flex items-center gap-2">
-                <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">
+                <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded" style={{ border: "1px solid #D9DEE5" }}>
                   <Image src="/logo.png" alt="EAF Logo" fill className="object-contain" />
                 </div>
-                <span className="text-xs font-bold text-slate-900 dark:text-white tracking-wide">EACRMS</span>
+                <span className="text-xs font-bold tracking-wide" style={{ color: "#1D1D1F" }}>EACRMS</span>
               </div>
             </div>
 
-            <div className="hidden md:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-zinc-500">
-              <span className="text-slate-700 dark:text-zinc-400 font-semibold uppercase tracking-wider text-[10px]">Admin</span>
-              <span>/</span>
-              <span className="text-slate-900 dark:text-zinc-300 font-semibold">{activeLabel}</span>
+            {/* Desktop breadcrumb */}
+            <div className="hidden md:flex items-center gap-2 text-xs font-medium">
+              <span className="font-semibold uppercase tracking-wider text-[10px]" style={{ color: "#8B9098" }}>Admin</span>
+              <span style={{ color: "#D9DEE5" }}>/</span>
+              <span className="font-semibold" style={{ color: "#1D1D1F" }}>{activeLabel}</span>
             </div>
 
+            {/* Right side */}
             <div className="flex items-center gap-3">
               <Link
                 href="/"
-                className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-200 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold shadow-sm transition-all"
+                style={{
+                  border: "1px solid #D9DEE5",
+                  backgroundColor: "#F7F8FA",
+                  color: "#555B63",
+                }}
+                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#DCEBF6")}
+                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#F7F8FA")}
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -208,21 +296,35 @@ export default function FederationLayout({ children }: { children: React.ReactNo
                 <span>Portal Hub</span>
               </Link>
 
-              <ThemeToggle />
-              <div className="rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-3 py-1 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span className="text-[10px] font-bold text-slate-600 dark:text-zinc-400 uppercase tracking-wider font-mono">Fayda Secured</span>
+              {/* Status badge */}
+              <div
+                className="rounded-full px-3 py-1 flex items-center gap-2"
+                style={{ backgroundColor: "#DCEBF6", border: "1px solid rgba(1,64,167,0.15)" }}
+              >
+                <span className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: "#0140A7" }} />
+                <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: "#0140A7" }}>
+                  Fayda Secured
+                </span>
               </div>
-              <div className="h-8 w-px bg-slate-200 dark:bg-zinc-800 hidden sm:block"></div>
-              <span className="hidden sm:inline text-xs text-slate-600 dark:text-zinc-400">
-                Welcome, <span className="font-semibold text-slate-900 dark:text-zinc-200">{user?.name}</span>
+
+              <div className="h-8 w-px hidden sm:block" style={{ backgroundColor: "#D9DEE5" }} />
+              <span className="hidden sm:inline text-xs" style={{ color: "#555B63" }}>
+                Welcome,{" "}
+                <span className="font-semibold" style={{ color: "#1D1D1F" }}>{user?.name}</span>
               </span>
             </div>
           </header>
 
           {/* Mobile Nav Drawer */}
           {mobileMenuOpen && (
-            <div className="md:hidden border-b border-slate-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/90 backdrop-blur-lg px-4 py-4 space-y-1">
+            <div
+              className="md:hidden px-4 py-4 space-y-1"
+              style={{
+                borderBottom: "1px solid #D9DEE5",
+                backgroundColor: "rgba(255,255,255,0.97)",
+                backdropFilter: "blur(12px)",
+              }}
+            >
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
@@ -230,28 +332,50 @@ export default function FederationLayout({ children }: { children: React.ReactNo
                     key={item.name}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
-                      isActive ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" : "text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800/40"
-                    }`}
+                    className="flex items-center gap-3.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all"
+                    style={
+                      isActive
+                        ? { backgroundColor: "#DCEBF6", color: "#0140A7", border: "1px solid rgba(1,64,167,0.15)" }
+                        : { color: "#555B63", border: "1px solid transparent" }
+                    }
                   >
                     {item.icon}
                     {item.name}
                   </Link>
                 );
               })}
-              <div className="border-t border-slate-200 dark:border-zinc-800 mt-4 pt-4 flex items-center justify-between px-4">
+              <div
+                className="mt-4 pt-4 flex items-center justify-between px-4"
+                style={{ borderTop: "1px solid #D9DEE5" }}
+              >
                 <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">{initials}</div>
+                  <div
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
+                    style={{ backgroundColor: "#0140A7" }}
+                  >
+                    {initials}
+                  </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-800 dark:text-zinc-200">{user?.name}</p>
-                    <p className="text-[10px] text-slate-500 dark:text-zinc-500 font-mono">{user?.role}</p>
+                    <p className="text-xs font-bold" style={{ color: "#1D1D1F" }}>{user?.name}</p>
+                    <p className="text-[10px] font-mono" style={{ color: "#8B9098" }}>{user?.role}</p>
                   </div>
                 </div>
-                <button onClick={handleLogout} className="rounded-lg border border-slate-200 dark:border-zinc-800 px-3 py-1.5 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-500/10">Sign Out</button>
+                <button
+                  onClick={handleLogout}
+                  className="rounded-lg px-3 py-1.5 text-xs font-bold transition-all"
+                  style={{
+                    border: "1px solid rgba(211,47,47,0.3)",
+                    color: "#D32F2F",
+                    backgroundColor: "rgba(211,47,47,0.05)",
+                  }}
+                >
+                  Sign Out
+                </button>
               </div>
             </div>
           )}
 
+          {/* Page Content */}
           <main className="flex-1 overflow-y-auto p-6 md:p-8">
             <div className="mx-auto max-w-7xl">{children}</div>
           </main>
