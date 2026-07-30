@@ -116,7 +116,7 @@ export default function Home() {
               </Link>
 
               <Link
-                href="/club-admin/login"
+                href="/policy"
                 className="flex items-center gap-2.5 rounded-2xl px-7 py-4 text-sm font-bold shadow-sm transition-all"
                 style={{
                   border: `1px solid ${colors.borderDefault}`,
@@ -126,7 +126,7 @@ export default function Home() {
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = colors.primary; (e.currentTarget as HTMLElement).style.color = colors.primary; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = colors.borderDefault; (e.currentTarget as HTMLElement).style.color = colors.textPrimary; }}
               >
-                Club Admin Sign In →
+                Policy &amp; Regulations →
               </Link>
             </div>
 
