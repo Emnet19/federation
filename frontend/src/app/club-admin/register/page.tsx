@@ -408,7 +408,7 @@ export default function StandaloneClubAdminRegisterPage() {
                 ? "text-white shadow-md"
                 : "bg-slate-100 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
-              style={activeTab === "roster" ? { backgroundColor: "#2E7D32" } : {}}
+              style={activeTab === "roster" ? { backgroundColor: "#0140A7" } : {}}
             >
               👥 Club Roster & Applications
               {members.filter((m) => m.status === "Pending Approval").length > 0 && (
@@ -425,7 +425,7 @@ export default function StandaloneClubAdminRegisterPage() {
                 ? "text-white shadow-md"
                 : "bg-slate-100 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
-              style={activeTab === "events" ? { backgroundColor: "#2E7D32" } : {}}
+              style={activeTab === "events" ? { backgroundColor: "#0140A7" } : {}}
             >
               🏆 Live & Upcoming Events
               <span className="flex h-2 w-2 rounded-full animate-ping" style={{ backgroundColor: "#D32F2F" }} />
@@ -570,12 +570,11 @@ export default function StandaloneClubAdminRegisterPage() {
                   return (
                     <React.Fragment key={s}>
                       <span
-                        className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-black transition-colors ${isActive
-                          ? "bg-blue-600 text-white"
-                          : isDone
-                            ? "bg-emerald-500 text-white"
-                            : "bg-slate-200 dark:bg-zinc-700 text-slate-500 dark:text-zinc-400"
+                        className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-black transition-colors ${isDone
+                          ? "text-white"
+                          : "bg-slate-200 dark:bg-zinc-700 text-slate-500 dark:text-zinc-400"
                           }`}
+                        style={isActive ? { backgroundColor: "#0140A7" } : isDone ? { backgroundColor: "#0140A7" } : {}}
                       >
                         {isDone ? "✓" : i + 1}
                       </span>
@@ -593,7 +592,7 @@ export default function StandaloneClubAdminRegisterPage() {
             {regStep === "fayda" && (
               <div className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/80 p-8 shadow-xl space-y-5">
                 <div className="space-y-1">
-                  <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold border bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800">
+                  <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold border" style={{ backgroundColor: "#DCEBF6", color: "#0140A7", borderColor: "rgba(1,64,167,0.2)" }}>
                     🆔 FAYDA NATIONAL ID
                   </div>
                   <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">
@@ -731,8 +730,8 @@ export default function StandaloneClubAdminRegisterPage() {
             {regStep === "details" && faydaProfile && (
               <div className="space-y-4">
                 {/* Identity card pulled from Fayda */}
-                <div className="rounded-2xl border p-5 space-y-3" style={{ borderColor: "rgba(46,125,50,0.3)", backgroundColor: "rgba(46,125,50,0.05)" }}>
-                  <div className="flex items-center gap-2 text-xs font-bold" style={{ color: "#2E7D32" }}>
+                <div className="rounded-2xl border p-5 space-y-3" style={{ borderColor: "rgba(1,64,167,0.3)", backgroundColor: "rgba(1,64,167,0.05)" }}>
+                  <div className="flex items-center gap-2 text-xs font-bold" style={{ color: "#0140A7" }}>
                     <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -877,12 +876,12 @@ export default function StandaloneClubAdminRegisterPage() {
 
             {/* ── STEP D: Success ── */}
             {regStep === "done" && (
-              <div className="rounded-3xl border p-10 shadow-xl text-center space-y-4" style={{ borderColor: "rgba(46,125,50,0.3)", backgroundColor: "rgba(46,125,50,0.05)" }}>
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full text-3xl" style={{ backgroundColor: "rgba(46,125,50,0.1)" }}>
+              <div className="rounded-3xl border p-10 shadow-xl text-center space-y-4" style={{ borderColor: "rgba(1,64,167,0.3)", backgroundColor: "rgba(1,64,167,0.05)" }}>
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full text-3xl" style={{ backgroundColor: "rgba(1,64,167,0.1)" }}>
                   ✅
                 </div>
                 <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">Athlete Registered!</h3>
-                <p className="text-xs font-semibold leading-relaxed" style={{ color: "#2E7D32" }}>
+                <p className="text-xs font-semibold leading-relaxed" style={{ color: "#0140A7" }}>
                   {regSuccessMessage}
                 </p>
                 <p className="text-[11px] text-slate-500 dark:text-zinc-400">
@@ -899,9 +898,9 @@ export default function StandaloneClubAdminRegisterPage() {
                     setRegSuccessMessage("");
                   }}
                   className="rounded-xl text-white font-bold px-6 py-2.5 text-xs shadow transition-colors"
-                  style={{ backgroundColor: "#2E7D32" }}
-                  onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#1B5E20")}
-                  onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#2E7D32")}
+                  style={{ backgroundColor: "#0140A7" }}
+                  onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#0A4870")}
+                  onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#0140A7")}
                 >
                   Register Another Athlete
                 </button>
