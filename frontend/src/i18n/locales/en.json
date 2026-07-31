@@ -1,0 +1,115 @@
+{
+  "app": {
+    "name": "EACRMS",
+    "tagline": "Ethiopian Athletics Competition & Roster Management System",
+    "version": "Federation v2.4",
+    "searchPlaceholder": "Search events, clubs, athletes...",
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode",
+    "selectLanguage": "Choose your language",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu"
+  },
+  "nav": {
+    "competitionManagement": "Competition Management",
+    "eventApproval": "Event Approval Center",
+    "pendingReview": "Pending Review",
+    "eafHub": "EAF Operations Hub",
+    "eafHubDesc": "National Athletics Sanctioning & Event Operations",
+    "addisAbaba": "Addis Ababa",
+    "liveSync": "Live Sync"
+  },
+  "common": {
+    "all": "All",
+    "refresh": "Refresh",
+    "exportCsv": "Export CSV",
+    "cancel": "Cancel",
+    "processing": "Processing...",
+    "saving": "Saving...",
+    "approve": "Approve",
+    "na": "N/A",
+    "athletes": "Athletes",
+    "registered": "registered",
+    "remaining": "remaining"
+  },
+  "roles": {
+    "FEDERATION_ADMIN": "Federation Admin"
+  },
+  "filters": {
+    "allCategories": "All Categories",
+    "allRegions": "All Regions",
+    "searchEvent": "Search event name, organizer, city..."
+  },
+  "statuses": {
+    "Approved": "Approved",
+    "Rejected": "Rejected",
+    "Draft": "Draft",
+    "Pending": "Pending"
+  },
+  "approval": {
+    "badge": "Federation Sanctioning Board",
+    "title": "Event Approval Center",
+    "subtitle": "Review newly submitted athletics competitions before sanctioning & public calendar publication.",
+    "refreshList": "Refresh List",
+    "statusUpdated": "Event \"{{name}}\" status updated to {{status}}.",
+    "notesSaved": "Admin notes saved."
+  },
+  "form": {
+    "region": "Region",
+    "registrationOpens": "Registration Opens",
+    "registrationDeadline": "Registration Deadline",
+    "saveDraft": "Save Draft"
+  },
+  "table": {
+    "eventName": "Event Name",
+    "category": "Category",
+    "organizer": "Organizer",
+    "regionStadium": "Region / Stadium",
+    "schedule": "Schedule",
+    "quota": "Quota",
+    "submittedBy": "Submitted By",
+    "status": "Status",
+    "actions": "Actions",
+    "viewFullDossier": "View Full Dossier",
+    "approveEvent": "Approve Event",
+    "rejectEvent": "Reject Event",
+    "emptyTitle": "No Athletics Events Found",
+    "emptyDesc": "No competition events match your selected filters. Try broadening your search or configure a new event.",
+    "viewEventDetails": "View Event Details"
+  },
+  "drawer": {
+    "eventIdentifier": "Event Identifier",
+    "eventDetails": "Event Details",
+    "generalInfo": "General Information",
+    "scheduleDetails": "Schedule Details",
+    "eventDescription": "Event Description",
+    "noDescription": "No description provided.",
+    "participantQuota": "Participant Quota & Roster Status",
+    "maxCapacity": "Maximum Capacity",
+    "registeredRemaining": "Registered / Remaining",
+    "capacityFilled": "{{percent}}% Capacity Filled",
+    "approvalHistory": "Approval History Timeline",
+    "adminNotes": "Federation Admin Notes",
+    "adminNotesPlaceholder": "Internal notes for federation administrators...",
+    "competitionLevel": "Competition Level",
+    "competitionDate": "Competition Date",
+    "startTime": "Start Time",
+    "stadiumVenue": "Stadium / Venue",
+    "requestChanges": "Request Changes",
+    "reject": "Reject"
+  },
+  "modal": {
+    "confirmApproval": "Confirm Event Approval",
+    "confirmRejection": "Confirm Event Rejection",
+    "sanctioningBoard": "EACRMS Official Sanctioning Board",
+    "targetEvent": "Target Event",
+    "approveDesc": "Are you sure you want to approve this event? This action will sanction the competition, publish it to the official Ethiopian athletics calendar, and notify the event organizer.",
+    "rejectDesc": "Are you sure you want to reject this event? This action will reject the sanction request. Please provide a clear reason for the organizer.",
+    "rejectionReason": "Reason for Rejection *",
+    "approvalNotes": "Official Approval Notes (Optional)",
+    "rejectPlaceholder": "Specify technical non-compliance, date conflict, or venue issues...",
+    "approvePlaceholder": "Add any sanction notes, referee assignments, or special conditions...",
+    "approveCompetition": "Approve Competition",
+    "rejectEvent": "Reject Event"
+  }
+}

@@ -49,6 +49,23 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ===== EACRMS Event Approval palette (Event Approval Center) ===== */
+@theme {
+  --color-primary-light: #dce8f8;
+  --color-surface: #ffffff;
+  --color-text-primary: #12131f;
+  --color-text-secondary: #555863;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+  --color-dark-bg: #0b0f19;
+  --color-dark-surface: #121827;
+  --color-dark-border: #1f293d;
+  --color-dark-text: #f7f8fa;
+  --color-dark-text-muted: #8e95a5;
+}
+
 
 body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
@@ -134,4 +151,135 @@ body {
   html {
     @apply font-sans;
   }
+}
+
+/* ============================================================
+   EACRMS Event Approval Center — shared UI styles
+   ============================================================ */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #e9ecef 25%, #f7f8fa 50%, #e9ecef 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(90deg, #121827 25%, #1f293d 50%, #121827 75%);
+  background-size: 200% 100%;
+}
+
+/* Scoped EACRMS palette overrides for the Event Approval Center.
+   These only apply inside the approval feature, leaving the rest
+   of the Federation design system untouched. */
+.event-approval-scope {
+  --primary: #0140a7;
+  --primary-foreground: #ffffff;
+  --secondary: #e6a520;
+  --secondary-foreground: #12131f;
+  --background: #f7f8fa;
+  --foreground: #12131f;
+  --border: #d9dee5;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --muted: #f1f2f4;
+  --accent: #dce8f8;
+  --ring: #0140a7;
+}
+
+@utility card {
+  @apply bg-white dark:bg-[#121827] rounded-[16px] border border-[#D9DEE5] dark:border-[#1F293D] shadow-sm;
+}
+
+@utility btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-xs font-semibold
+         text-[#0140A7] dark:text-[#DCE8F8] bg-white dark:bg-[#121827]
+         border border-[#0140A7] dark:border-[#3B82F6]
+         hover:bg-[#DCE8F8]/40 dark:hover:bg-[#0140A7]/20 transition-all duration-200 min-h-[42px] cursor-pointer;
+}
+
+@utility btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-xs font-medium
+         text-[#555863] dark:text-[#8E95A5] hover:bg-[#DCE8F8]/30 dark:hover:bg-[#1F293D] hover:text-[#0140A7] dark:hover:text-[#F7F8FA]
+         transition-all duration-200 min-h-[42px] cursor-pointer;
+}
+
+@utility badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-[11px] font-medium border;
+}
+
+@utility badge-success {
+  @apply badge bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/30;
+}
+
+@utility badge-warning {
+  @apply badge bg-[#E6A520]/15 text-[#E6A520] border-[#E6A520]/30;
+}
+
+@utility badge-error {
+  @apply badge bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/30;
+}
+
+@utility badge-info {
+  @apply badge bg-[#DCE8F8] dark:bg-[#0140A7]/30 text-[#0140A7] dark:text-[#3B82F6] border-[#0140A7]/20 dark:border-[#3B82F6]/30;
+}
+
+@utility badge-neutral {
+  @apply badge bg-[#F7F8FA] dark:bg-[#0B0F19] text-[#555863] dark:text-[#8E95A5] border-[#D9DEE5] dark:border-[#1F293D];
+}
+
+@utility dot {
+  @apply w-1.5 h-1.5 rounded-full mr-1.5 inline-block;
+}
+
+@utility modal-backdrop {
+  @apply fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#12131F]/50 backdrop-blur-xs;
+}
+
+@utility dialog {
+  @apply bg-surface dark:bg-dark-surface rounded-2xl border border-border dark:border-dark-border shadow-2xl max-w-md w-full overflow-hidden;
+}
+
+@utility filter-select {
+  @apply w-full text-xs font-normal px-4 py-2.5 rounded-full border border-border dark:border-dark-border bg-surface dark:bg-dark-surface text-text-primary dark:text-dark-text focus:ring-2 focus:ring-primary/30 focus:border-primary appearance-none cursor-pointer pr-8 transition-all;
+}
+
+@utility filter-search {
+  @apply w-full text-xs font-normal pl-9 pr-4 py-2.5 rounded-full border border-border dark:border-dark-border bg-surface dark:bg-dark-surface text-text-primary dark:text-dark-text placeholder:text-text-secondary/60 dark:placeholder:text-dark-text-muted/60 focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all;
+}
+
+@utility page-header {
+  @apply flex flex-col md:flex-row md:items-center justify-between gap-4
+         border-b border-[#D9DEE5] dark:border-[#1F293D] pb-6;
+}
+
+@utility table-header {
+  @apply bg-[#F7F8FA]/90 dark:bg-[#121827]/90 border-b border-[#D9DEE5] dark:border-[#1F293D]
+         text-[11px] font-semibold text-[#555863] dark:text-[#8E95A5] uppercase tracking-wider sticky top-0 z-10 backdrop-blur-xs;
+}
+
+@utility table-row {
+  @apply hover:bg-[#DCE8F8]/20 dark:hover:bg-[#1F293D]/50 transition-colors;
 }
