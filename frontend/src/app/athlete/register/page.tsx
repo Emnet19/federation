@@ -242,7 +242,9 @@ export default function AthleteSelfRegistrationPage() {
           <div className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/80 backdrop-blur-xl p-8 shadow-xl space-y-6">
             <div className="space-y-2 text-center">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-2xl border" style={{ backgroundColor: BRAND.primaryLight, color: BRAND.primary, borderColor: BRAND.primary + "33" }}>
-                🆔
+                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-4 0V5a2 2 0 014 0v1" />
+                </svg>
               </div>
               <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
                 Enter Your Fayda FAN
@@ -272,7 +274,7 @@ export default function AthleteSelfRegistrationPage() {
 
               {fanError && (
                 <div className="rounded-xl border p-3 text-sm font-semibold" style={{ backgroundColor: BRAND.error + "1A", borderColor: BRAND.error + "33", color: BRAND.error }}>
-                  ⚠ {fanError}
+                  <strong>Warning:</strong> {fanError}
                 </div>
               )}
 
@@ -302,7 +304,9 @@ export default function AthleteSelfRegistrationPage() {
 
             <div className="space-y-2 text-center">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-2xl border" style={{ backgroundColor: BRAND.secondaryLight, color: BRAND.secondary, borderColor: BRAND.secondary + "33" }}>
-                📱
+                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
               </div>
               <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
                 Enter OTP Code
@@ -335,7 +339,7 @@ export default function AthleteSelfRegistrationPage() {
 
               {otpError && (
                 <div className="rounded-xl border p-3 text-sm font-semibold text-center" style={{ backgroundColor: BRAND.error + "1A", borderColor: BRAND.error + "33", color: BRAND.error }}>
-                  ⚠ {otpError}
+                  <strong>Error:</strong> {otpError}
                 </div>
               )}
 
@@ -365,7 +369,10 @@ export default function AthleteSelfRegistrationPage() {
 
             <div className="space-y-2">
               <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold border" style={{ backgroundColor: BRAND.primaryLight, color: BRAND.primary, borderColor: BRAND.primary + "33" }}>
-                ✓ Fayda Verified
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Fayda Verified
               </span>
               <h2 className="text-xl font-bold text-slate-900 dark:text-white">Your Identity & Contact Details</h2>
             </div>
@@ -446,7 +453,7 @@ export default function AthleteSelfRegistrationPage() {
 
               {detailsError && (
                 <div className="rounded-xl border p-3 text-sm font-semibold" style={{ backgroundColor: BRAND.error + "1A", borderColor: BRAND.error + "33", color: BRAND.error }}>
-                  ⚠ {detailsError}
+                  <strong>Error:</strong> {detailsError}
                 </div>
               )}
 
@@ -467,7 +474,9 @@ export default function AthleteSelfRegistrationPage() {
         {regStep === "done" && registeredAthlete && (
           <div className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/90 backdrop-blur-xl p-8 shadow-xl text-center space-y-6">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full text-3xl border" style={{ backgroundColor: BRAND.secondaryLight, color: BRAND.secondary, borderColor: BRAND.secondary + "33" }}>
-              ⏳
+              <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
 
             <div className="space-y-2">
@@ -507,7 +516,7 @@ export default function AthleteSelfRegistrationPage() {
             </div>
 
             <div className="rounded-xl border p-4 text-xs text-left" style={{ backgroundColor: BRAND.primaryLight, borderColor: BRAND.primary + "33", color: BRAND.primaryDark }}>
-              <p className="font-bold mb-1">📧 Next Steps:</p>
+              <p className="font-bold mb-1">Next Steps:</p>
               <ul className="space-y-1 ml-4 list-disc">
                 <li>Please check your email regularly for approval notifications</li>
                 <li>The review process typically takes 1-3 business days</li>

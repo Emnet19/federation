@@ -386,7 +386,7 @@ export default function StandaloneClubAdminRegisterPage() {
                 : "bg-slate-100 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
             >
-              📊 Dashboard
+              Dashboard
             </button>
 
             {/* 2. In-House Register Athlete Tab */}
@@ -398,7 +398,7 @@ export default function StandaloneClubAdminRegisterPage() {
                 }`}
               style={activeTab === "add-athlete" ? { backgroundColor: "#0140A7" } : {}}
             >
-              ➕ Register New Athlete
+              Register New Athlete
             </button>
 
             {/* 3. Club Roster Tab */}
@@ -410,7 +410,7 @@ export default function StandaloneClubAdminRegisterPage() {
                 }`}
               style={activeTab === "roster" ? { backgroundColor: "#0140A7" } : {}}
             >
-              👥 Club Roster & Applications
+              Club Roster & Applications
               {members.filter((m) => m.status === "Pending Approval").length > 0 && (
                 <span className="rounded-full px-2 py-0.5 text-[10px] font-black text-slate-950" style={{ backgroundColor: "#F59E0B" }}>
                   {members.filter((m) => m.status === "Pending Approval").length}
@@ -427,7 +427,7 @@ export default function StandaloneClubAdminRegisterPage() {
                 }`}
               style={activeTab === "events" ? { backgroundColor: "#0140A7" } : {}}
             >
-              🏆 Live & Upcoming Events
+              Live & Upcoming Events
               <span className="flex h-2 w-2 rounded-full animate-ping" style={{ backgroundColor: "#D32F2F" }} />
             </button>
           </div>
@@ -576,7 +576,7 @@ export default function StandaloneClubAdminRegisterPage() {
                           }`}
                         style={isActive ? { backgroundColor: "#0140A7" } : isDone ? { backgroundColor: "#0140A7" } : {}}
                       >
-                        {isDone ? "✓" : i + 1}
+                        {isDone ? <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg> : i + 1}
                       </span>
                       <span className={isActive ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-zinc-500"}>
                         {s === "fayda" ? "Fayda FAN" : s === "otp" ? "OTP Verify" : "Contact & Password"}
@@ -593,7 +593,7 @@ export default function StandaloneClubAdminRegisterPage() {
               <div className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/80 p-8 shadow-xl space-y-5">
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold border" style={{ backgroundColor: "#DCEBF6", color: "#0140A7", borderColor: "rgba(1,64,167,0.2)" }}>
-                    🆔 FAYDA NATIONAL ID
+                    FAYDA NATIONAL ID
                   </div>
                   <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">
                     Enter the athlete&apos;s 16-digit Fayda Access Number (FAN). An OTP will be sent to the phone number linked to their Fayda account.
@@ -620,7 +620,7 @@ export default function StandaloneClubAdminRegisterPage() {
 
                   {fanLookupError && (
                     <div className="rounded-xl border p-3 font-semibold" style={{ backgroundColor: "rgba(211,47,47,0.1)", borderColor: "rgba(211,47,47,0.2)", color: "#D32F2F" }}>
-                      ⚠ {fanLookupError}
+                      <strong>Error:</strong> {fanLookupError}
                     </div>
                   )}
 
@@ -657,7 +657,9 @@ export default function StandaloneClubAdminRegisterPage() {
 
                 <div className="space-y-1 text-center">
                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-2xl border" style={{ backgroundColor: "#FFF3CC", borderColor: "#E6A500" }}>
-                    📱
+                    <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="#E6A500">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
                   </div>
                   <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">Enter OTP</h3>
                   <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">
@@ -689,7 +691,7 @@ export default function StandaloneClubAdminRegisterPage() {
 
                   {otpError && (
                     <div className="rounded-xl border p-3 font-semibold text-center" style={{ backgroundColor: "rgba(211,47,47,0.1)", borderColor: "rgba(211,47,47,0.2)", color: "#D32F2F" }}>
-                      ⚠ {otpError}
+                      <strong>Error:</strong> {otpError}
                     </div>
                   )}
 
@@ -847,7 +849,7 @@ export default function StandaloneClubAdminRegisterPage() {
 
                     {detailsError && (
                       <div className="rounded-xl border p-3 font-semibold" style={{ backgroundColor: "rgba(211,47,47,0.1)", borderColor: "rgba(211,47,47,0.2)", color: "#D32F2F" }}>
-                        ⚠ {detailsError}
+                        <strong>Error:</strong> {detailsError}
                       </div>
                     )}
 
@@ -866,7 +868,7 @@ export default function StandaloneClubAdminRegisterPage() {
                         onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#0A4870")}
                         onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#0140A7")}
                       >
-                        Register Athlete to Club Roster ✓
+                        Register Athlete to Club Roster
                       </button>
                     </div>
                   </form>
@@ -878,7 +880,9 @@ export default function StandaloneClubAdminRegisterPage() {
             {regStep === "done" && (
               <div className="rounded-3xl border p-10 shadow-xl text-center space-y-4" style={{ borderColor: "rgba(1,64,167,0.3)", backgroundColor: "rgba(1,64,167,0.05)" }}>
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full text-3xl" style={{ backgroundColor: "rgba(1,64,167,0.1)" }}>
-                  ✅
+                  <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="#0140A7">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                 </div>
                 <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">Athlete Registered!</h3>
                 <p className="text-xs font-semibold leading-relaxed" style={{ color: "#0140A7" }}>
