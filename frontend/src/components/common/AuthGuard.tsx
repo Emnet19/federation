@@ -9,11 +9,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isLoginPage = pathname === "/federation/login";
+  // Treat both the root login form and old /federation/login as login pages
+  const isLoginPage = pathname === "/" || pathname === "/federation/login";
 
   useEffect(() => {
     if (!isLoading && !user && !isLoginPage) {
-      router.replace("/federation/login");
+      router.replace("/");
     }
   }, [user, isLoading, isLoginPage, router]);
 
@@ -30,6 +31,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   // Allow login page access
   if (isLoginPage) {
+    // Allow login pages unconditionally
     return <>{children}</>;
   }
 
@@ -61,10 +63,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
           </p>
           <div className="flex flex-col gap-3">
             <button
-              onClick={() => { logout(); router.push("/federation/login"); }}
+              onClick={() => { logout(); router.push("/"); }}
               className="flex w-full items-center justify-center rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-red-500 active:scale-[0.98]"
             >
-              Log Out & Switch Role
+              Log Out & Sign In Again
             </button>
             <button
               onClick={() => router.push("/")}
