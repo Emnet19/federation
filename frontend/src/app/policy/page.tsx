@@ -31,7 +31,7 @@ export default function PublicPolicyPage() {
             <ThemeToggle />
             <Link
               href="/"
-              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-200 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 transition-all"
+              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-sm hover:border-blue-600 hover:text-blue-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-blue-400 dark:hover:text-blue-400 transition-all"
             >
               ← Back to Portal
             </Link>
@@ -42,13 +42,7 @@ export default function PublicPolicyPage() {
       {/* Main Content */}
       <main className="mx-auto max-w-5xl px-4 sm:px-6 py-12 space-y-12">
         {/* Banner */}
-        <div className="rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent p-8 sm:p-10 text-center space-y-4 shadow-xl">
-          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-            Proclamation No. 1284/2023 Compliant
-          </div>
+        <div className="rounded-3xl border border-slate-200 dark:border-zinc-800/80 bg-gradient-to-br from-blue-500/5 via-blue-500/0 to-transparent p-8 sm:p-10 text-center space-y-4 shadow-xl">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             EAF Regulatory & Licensing Policy
           </h1>
@@ -112,7 +106,7 @@ export default function PublicPolicyPage() {
           </div>
           <Link
             href="/athlete/register"
-            className="rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-500 transition-colors shadow-md shrink-0"
+            className="rounded-xl px-5 py-2.5 text-xs font-extrabold text-white transition-all shadow-md shrink-0 bg-[#E6A500] hover:bg-[#C98F00]"
           >
             Start Fayda Registration →
           </Link>
