@@ -72,32 +72,33 @@ export default function PolicyPage() {
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-bold text-slate-900 dark:text-zinc-100">{club.name}</p>
-                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono border ${
-                    club.licensed
-                      ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
-                      : "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20"
-                  }`}>
+                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono border ${club.licensed
+                    ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
+                    : "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20"
+                    }`}>
                     {club.licensed ? "Licensed" : "Unlicensed"}
                   </span>
-                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono border ${
-                    club.fee === "Paid"
-                      ? "bg-slate-100 text-slate-700 border-slate-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700"
-                      : "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20"
-                  }`}>
+                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono border ${club.fee === "Paid"
+                    ? "bg-slate-100 text-slate-700 border-slate-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700"
+                    : "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20"
+                    }`}>
                     Fee: {club.fee}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-3 mt-1 text-[10px] font-mono text-slate-500 dark:text-zinc-400">
-                  <span>📍 {club.region}</span>
-                  <span>👤 {club.athletes} Athletes</span>
-                  {club.pending > 0 && <span className="text-yellow-600 dark:text-yellow-400 font-bold">⚠ {club.pending} Pending Docs</span>}
-                  {club.transferLocked && <span className="text-red-600 dark:text-red-400 font-bold">🔒 Transfers Locked</span>}
+                  <span>{club.region}</span>
+                  <span>{club.athletes} Athletes</span>
+                  {club.pending > 0 && <span className="text-yellow-600 dark:text-yellow-400 font-bold">{club.pending} Pending Docs</span>}
+                  {club.transferLocked && <span className="text-red-600 dark:text-red-400 font-bold">Transfers Locked</span>}
                 </div>
               </div>
               {!club.licensed && (
                 <button
                   onClick={() => activateLicense(club.id)}
-                  className="shrink-0 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-500 transition-colors active:scale-95 shadow-sm"
+                  className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm"
+                  style={{ backgroundColor: "#0140A7" }}
+                  onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#0A4870")}
+                  onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = "#0140A7")}
                 >
                   Activate License
                 </button>
