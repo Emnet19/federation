@@ -45,6 +45,7 @@ interface PendingRegistration {
   athlete: RegisteredAthlete;
   txRef: string;
   paymentMethodId: string;
+  paymentStatus: "pending" | "paid" | "failed";
 }
 
 const REGISTRATION_FEE_ETB = 500;
@@ -138,13 +139,21 @@ export default function AthleteSelfRegistrationPage() {
   // Step 5: Success
   const [registeredAthlete, setRegisteredAthlete] = useState<RegisteredAthlete | null>(null);
 
+  // Set when the browser is redirected back from the Chapa checkout (the
+  // return-effect handles the restore in that case, not the refresh restore).
+  const handledReturnRef = useRef(false);
+
   const formatFanDigits = (val: string) => {
     const raw = val.replace(/\D/g, "").slice(0, 16);
     const groups = raw.match(/.{1,4}/g);
     return groups ? groups.join(" ") : raw;
   };
 
-  const persistPending = (athlete: RegisteredAthlete, nextTxRef: string) => {
+  const persistPending = (
+    athlete: RegisteredAthlete,
+    nextTxRef: string,
+    status: "pending" | "paid" | "failed" = "pending"
+  ) => {
     if (!faydaProfile) return;
     const pending: PendingRegistration = {
       faydaProfile,
@@ -154,6 +163,7 @@ export default function AthleteSelfRegistrationPage() {
       athlete,
       txRef: nextTxRef,
       paymentMethodId,
+      paymentStatus: status,
     };
     sessionStorage.setItem(PENDING_REG_KEY, JSON.stringify(pending));
   };
@@ -163,6 +173,7 @@ export default function AthleteSelfRegistrationPage() {
     const params = new URLSearchParams(window.location.search);
     const returnedTxRef = params.get("tx_ref") ?? params.get("trx_ref");
     if (!returnedTxRef) return;
+    handledReturnRef.current = true;
 
     const url = new URL(window.location.href);
     url.search = "";
@@ -202,7 +213,7 @@ export default function AthleteSelfRegistrationPage() {
             if (json.verified === true) {
               setPaymentStatus("paid");
               setRegStep("done");
-              sessionStorage.removeItem(PENDING_REG_KEY);
+              sessionStorage.setItem(PENDING_REG_KEY, JSON.stringify({ ...restored, paymentStatus: "paid" }));
             } else {
               setPaymentStatus("failed");
               setPaymentError(json.message ?? "Your payment has not been confirmed yet. Please try again.");
@@ -214,6 +225,37 @@ export default function AthleteSelfRegistrationPage() {
         setPaymentError("Could not confirm your payment. Please try again.");
       })
       .finally(() => setIsVerifyingPayment(false));
+  }, []);
+
+  // Restore an in-progress registration after a page refresh so the wizard
+  // returns to the payment (or done) step instead of starting over.
+  useEffect(() => {
+    if (handledReturnRef.current) return;
+    let restored: PendingRegistration | null = null;
+    try {
+      const raw = sessionStorage.getItem(PENDING_REG_KEY);
+      restored = raw ? (JSON.parse(raw) as PendingRegistration) : null;
+    } catch {
+      restored = null;
+    }
+    if (!restored || !restored.athlete || !restored.faydaProfile) return;
+
+    Promise.resolve().then(() => {
+      setFaydaProfile(restored?.faydaProfile ?? null);
+      setContactPhone(restored?.contactPhone ?? "");
+      setContactEmail(restored?.contactEmail ?? "");
+      setContactPassword(restored?.contactPassword ?? "");
+      setRegisteredAthlete(restored?.athlete ?? null);
+      setTxRef(restored?.txRef ?? "");
+      setPaymentMethodId(restored?.paymentMethodId ?? "");
+      if (restored?.paymentStatus === "paid") {
+        setPaymentStatus("paid");
+        setRegStep("done");
+      } else {
+        setPaymentStatus("pending");
+        setRegStep("payment");
+      }
+    });
   }, []);
 
   // Step 1: Enter Fayda FAN → send OTP
