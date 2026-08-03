@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
+import { PAYMENT_METHODS, formatEthiopianBirr } from "@/lib/payment-methods";
+import { CircleX, BadgeCheck } from "lucide-react";
 
 // Brand colors
 const BRAND = {
@@ -35,8 +37,77 @@ interface RegisteredAthlete {
   phone: string;
 }
 
+interface PendingRegistration {
+  faydaProfile: FaydaProfile;
+  contactPhone: string;
+  contactEmail: string;
+  contactPassword: string;
+  athlete: RegisteredAthlete;
+  txRef: string;
+  paymentMethodId: string;
+}
+
+const REGISTRATION_FEE_ETB = 500;
+const PENDING_REG_KEY = "eaf_pending_registration";
+
+type RegStep = "fayda" | "otp" | "details" | "payment" | "done";
+const STEP_BACK: Record<RegStep, RegStep> = {
+  fayda: "fayda",
+  otp: "fayda",
+  details: "otp",
+  payment: "details",
+  done: "payment",
+};
+
+const normalizeEthiopianPhone = (input: string): string => {
+  let digits = input.replace(/\D/g, "");
+  if (digits.startsWith("251")) digits = digits.slice(3);
+  if (digits.length === 9 && (digits.startsWith("9") || digits.startsWith("7"))) {
+    digits = `0${digits}`;
+  }
+  return digits;
+};
+
+const isValidEthiopianPhone = (input: string): boolean =>
+  /^0[79]\d{8}$/.test(normalizeEthiopianPhone(input));
+
+const getPasswordIssues = (pw: string): string[] => {
+  const issues: string[] = [];
+  if (pw.length < 8) issues.push("at least 8 characters");
+  if (!/[A-Z]/.test(pw)) issues.push("an uppercase letter");
+  if (!/[a-z]/.test(pw)) issues.push("a lowercase letter");
+  if (!/\d/.test(pw)) issues.push("a number");
+  if (!/[^A-Za-z0-9]/.test(pw)) issues.push("a special character");
+  return issues;
+};
+
 export default function AthleteSelfRegistrationPage() {
-  const [regStep, setRegStep] = useState<"fayda" | "otp" | "details" | "done">("fayda");
+  const [regStep, setRegStep] = useState<RegStep>("fayda");
+
+  const goToStep = (next: RegStep) => {
+    setRegStep(next);
+    window.history.pushState({ step: next }, "");
+  };
+
+  // Keep the browser back button inside the wizard: every step has its own history
+  // entry, and a sentinel entry is added on mount so the first back press never
+  // navigates away to the home page. Going back always returns to the previous step.
+  useEffect(() => {
+    if (!window.history.state?.step) {
+      window.history.replaceState({ step: "fayda" }, "");
+    }
+    window.history.pushState({ step: "fayda" }, "");
+
+    const onPopState = () => {
+      setRegStep((current) => {
+        const prev = STEP_BACK[current] ?? "fayda";
+        window.history.pushState({ step: prev }, "");
+        return prev;
+      });
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   // Step 1: Fayda FAN
   const [fanInput, setFanInput] = useState("");
@@ -56,7 +127,15 @@ export default function AthleteSelfRegistrationPage() {
   const [contactPassword, setContactPassword] = useState("");
   const [detailsError, setDetailsError] = useState("");
 
-  // Step 4: Success
+  // Step 4: Payment (Chapa)
+  const [paymentStatus, setPaymentStatus] = useState<"pending" | "paid" | "failed">("pending");
+  const [paymentError, setPaymentError] = useState("");
+  const [isInitializingPayment, setIsInitializingPayment] = useState(false);
+  const [isVerifyingPayment, setIsVerifyingPayment] = useState(false);
+  const [txRef, setTxRef] = useState("");
+  const [paymentMethodId, setPaymentMethodId] = useState("");
+
+  // Step 5: Success
   const [registeredAthlete, setRegisteredAthlete] = useState<RegisteredAthlete | null>(null);
 
   const formatFanDigits = (val: string) => {
@@ -64,6 +143,78 @@ export default function AthleteSelfRegistrationPage() {
     const groups = raw.match(/.{1,4}/g);
     return groups ? groups.join(" ") : raw;
   };
+
+  const persistPending = (athlete: RegisteredAthlete, nextTxRef: string) => {
+    if (!faydaProfile) return;
+    const pending: PendingRegistration = {
+      faydaProfile,
+      contactPhone,
+      contactEmail,
+      contactPassword,
+      athlete,
+      txRef: nextTxRef,
+      paymentMethodId,
+    };
+    sessionStorage.setItem(PENDING_REG_KEY, JSON.stringify(pending));
+  };
+
+  // Restore state + verify payment when returning from the Chapa checkout page.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const returnedTxRef = params.get("tx_ref") ?? params.get("trx_ref");
+    if (!returnedTxRef) return;
+
+    const url = new URL(window.location.href);
+    url.search = "";
+    window.history.replaceState({}, "", url.toString());
+
+    Promise.resolve()
+      .then(() => {
+        const raw = sessionStorage.getItem(PENDING_REG_KEY);
+        const restored: PendingRegistration | null = raw ? JSON.parse(raw) : null;
+
+        if (!restored) {
+          setPaymentError("We could not find your pending registration. Please restart the process.");
+          setRegStep("payment");
+          return;
+        }
+
+        setFaydaProfile(restored.faydaProfile);
+        setContactPhone(restored.contactPhone);
+        setContactEmail(restored.contactEmail);
+        setContactPassword(restored.contactPassword);
+        setRegisteredAthlete(restored.athlete);
+        setTxRef(restored.txRef || returnedTxRef);
+        setPaymentMethodId(restored.paymentMethodId || params.get("method") || "");
+        setRegStep("payment");
+
+        const status = params.get("status");
+        if (status === "failed" || status === "cancelled") {
+          setPaymentStatus("failed");
+          setPaymentError("The payment was not completed. Please try again.");
+          return;
+        }
+
+        setIsVerifyingPayment(true);
+        return fetch(`/api/chapa/verify?tx_ref=${encodeURIComponent(returnedTxRef)}`)
+          .then((res) => res.json())
+          .then((json) => {
+            if (json.verified === true) {
+              setPaymentStatus("paid");
+              setRegStep("done");
+              sessionStorage.removeItem(PENDING_REG_KEY);
+            } else {
+              setPaymentStatus("failed");
+              setPaymentError(json.message ?? "Your payment has not been confirmed yet. Please try again.");
+            }
+          });
+      })
+      .catch(() => {
+        setPaymentStatus("failed");
+        setPaymentError("Could not confirm your payment. Please try again.");
+      })
+      .finally(() => setIsVerifyingPayment(false));
+  }, []);
 
   // Step 1: Enter Fayda FAN → send OTP
   const handleFanLookup = (e: React.FormEvent) => {
@@ -86,7 +237,7 @@ export default function AthleteSelfRegistrationPage() {
       });
       setIsFetchingFayda(false);
       setOtpDigits(["", "", "", "", "", ""]);
-      setRegStep("otp");
+      goToStep("otp");
     }, 900);
   };
 
@@ -110,7 +261,7 @@ export default function AthleteSelfRegistrationPage() {
     setIsVerifyingOtp(true);
     setTimeout(() => {
       setIsVerifyingOtp(false);
-      setRegStep("details");
+      goToStep("details");
     }, 800);
   };
 
@@ -144,12 +295,21 @@ export default function AthleteSelfRegistrationPage() {
       setDetailsError("Phone number is required.");
       return;
     }
+    if (!isValidEthiopianPhone(contactPhone)) {
+      setDetailsError("Please enter a valid Ethiopian phone number (e.g. 0912345678 or +251 912 345 678).");
+      return;
+    }
     if (!contactEmail.trim() || !contactEmail.includes("@")) {
       setDetailsError("Please enter a valid email address.");
       return;
     }
-    if (contactPassword.length < 6) {
-      setDetailsError("Password must be at least 6 characters.");
+    const passwordIssues = getPasswordIssues(contactPassword);
+    if (contactPassword.length === 0) {
+      setDetailsError("Password is required.");
+      return;
+    }
+    if (passwordIssues.length > 0) {
+      setDetailsError(`Password must include ${passwordIssues.join(", ")}.`);
       return;
     }
     if (!faydaProfile) return;
@@ -160,24 +320,67 @@ export default function AthleteSelfRegistrationPage() {
       email: contactEmail.trim(),
       fullName: faydaProfile.name,
       fanId: faydaProfile.fanId,
-      phone: contactPhone.trim(),
+      phone: normalizeEthiopianPhone(contactPhone),
     };
 
     setRegisteredAthlete(athlete);
-    setRegStep("done");
+    persistPending(athlete, "");
+    setPaymentStatus("pending");
+    setPaymentError("");
+    setTxRef("");
+    goToStep("payment");
+  };
+
+  // Step 4: Start Chapa payment
+  const handleStartPayment = async () => {
+    const athlete = registeredAthlete;
+    if (!athlete || !faydaProfile) return;
+
+    setIsInitializingPayment(true);
+    setPaymentError("");
+
+    const nextTxRef = `EAF-ATH-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    setTxRef(nextTxRef);
+    persistPending(athlete, nextTxRef);
+
+    try {
+      const res = await fetch("/api/chapa/initialize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: REGISTRATION_FEE_ETB,
+          email: athlete.email,
+          full_name: athlete.fullName,
+          phone: athlete.phone,
+          tx_ref: nextTxRef,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || json.status !== "success" || !json.data?.checkout_url) {
+        setPaymentError(json.message ?? "Could not start the payment. Please try again.");
+        return;
+      }
+      window.location.assign(json.data.checkout_url);
+    } catch {
+      setPaymentError("Could not reach the payment service. Please try again.");
+    } finally {
+      setIsInitializingPayment(false);
+    }
   };
 
   const getStepNumber = () => {
     if (regStep === "fayda") return 1;
     if (regStep === "otp") return 2;
     if (regStep === "details") return 3;
-    return 3;
+    if (regStep === "payment") return 4;
+    return 4;
   };
 
   const getStepLabel = () => {
     if (regStep === "fayda") return "Fayda FAN Entry";
     if (regStep === "otp") return "OTP Verification";
     if (regStep === "details") return "Contact Details";
+    if (regStep === "payment") return "Registration Fee";
     return "Complete";
   };
 
@@ -222,14 +425,14 @@ export default function AthleteSelfRegistrationPage() {
         {regStep !== "done" && (
           <div className="mb-8">
             <div className="flex items-center justify-between text-xs font-bold font-mono text-slate-500 dark:text-zinc-400 mb-2">
-              <span>Step {getStepNumber()} of 3</span>
+              <span>Step {getStepNumber()} of 4</span>
               <span>{getStepLabel()}</span>
             </div>
             <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-zinc-800 overflow-hidden">
               <div
                 className="h-full transition-all duration-300"
                 style={{
-                  width: `${(getStepNumber() / 3) * 100}%`,
+                  width: `${(getStepNumber() / 4) * 100}%`,
                   backgroundColor: BRAND.primary,
                 }}
               />
@@ -296,18 +499,13 @@ export default function AthleteSelfRegistrationPage() {
         {regStep === "otp" && (
           <div className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/80 backdrop-blur-xl p-8 shadow-xl space-y-6">
             <button
-              onClick={() => setRegStep("fayda")}
+              onClick={() => window.history.back()}
               className="flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors"
             >
               ← Back to FAN Entry
             </button>
 
             <div className="space-y-2 text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-2xl border" style={{ backgroundColor: BRAND.secondaryLight, color: BRAND.secondary, borderColor: BRAND.secondary + "33" }}>
-                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-              </div>
               <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
                 Enter OTP Code
               </h2>
@@ -361,7 +559,7 @@ export default function AthleteSelfRegistrationPage() {
         {regStep === "details" && faydaProfile && (
           <div className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/80 backdrop-blur-xl p-8 shadow-xl space-y-6">
             <button
-              onClick={() => setRegStep("otp")}
+              onClick={() => window.history.back()}
               className="flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors"
             >
               ← Back to OTP
@@ -464,13 +662,115 @@ export default function AthleteSelfRegistrationPage() {
                 onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = BRAND.secondaryDark)}
                 onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = BRAND.secondary)}
               >
-                Complete Registration
+                Complete Registration & Continue to Payment →
               </button>
             </form>
           </div>
         )}
 
-        {/* STEP D: PENDING APPROVAL STATUS */}
+        {/* STEP D: PAYMENT VIA CHAPA */}
+        {regStep === "payment" && !registeredAthlete && (
+          <div className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/80 backdrop-blur-xl p-8 shadow-xl text-center space-y-5">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border" style={{ backgroundColor: BRAND.error + "1A", color: BRAND.error, borderColor: BRAND.error + "33" }}>
+              <CircleX className="h-7 w-7" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">Payment Session Not Found</h2>
+              <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed max-w-md mx-auto">
+                {paymentError || "We could not find your pending registration. Please restart the athlete registration process."}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setRegStep("fayda")}
+              className="w-full flex items-center justify-center gap-2 rounded-2xl p-4 text-sm font-extrabold text-white shadow-lg transition-all"
+              style={{ backgroundColor: BRAND.primary }}
+              onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = BRAND.primaryDark)}
+              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = BRAND.primary)}
+            >
+              Restart Registration
+            </button>
+          </div>
+        )}
+
+        {regStep === "payment" && registeredAthlete && (
+          <div className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/80 backdrop-blur-xl p-8 shadow-xl space-y-6">
+            <button
+              onClick={() => window.history.back()}
+              disabled={isVerifyingPayment}
+              className="flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors disabled:opacity-40"
+            >
+              ← Back to Contact Details
+            </button>
+
+            <div className="space-y-2 text-center">
+              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+                Pay Registration Fee
+              </h2>
+              <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed max-w-md mx-auto">
+                Your details are verified. Complete the {formatEthiopianBirr(REGISTRATION_FEE_ETB)} registration fee
+                to finalize your athlete registration.
+              </p>
+            </div>
+
+            {/* Verifying notice (shown when returning from Chapa) */}
+            {isVerifyingPayment && (
+              <div className="rounded-xl border p-4 text-sm font-semibold" style={{ backgroundColor: BRAND.primaryLight, borderColor: BRAND.primary + "33", color: BRAND.primaryDark }}>
+                Verifying your payment, please wait...
+              </div>
+            )}
+
+            {/* Summary */}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 dark:border-zinc-800 dark:bg-zinc-950/60 p-5 space-y-3 font-mono text-xs">
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
+                <span className="text-slate-500 dark:text-zinc-500">Application ID:</span>
+                <span className="font-bold text-slate-900 dark:text-white">{registeredAthlete.id}</span>
+              </div>
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
+                <span className="text-slate-500 dark:text-zinc-500">Athlete:</span>
+                <span className="font-bold text-slate-900 dark:text-white">{registeredAthlete.fullName}</span>
+              </div>
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
+                <span className="text-slate-500 dark:text-zinc-500">Email:</span>
+                <span className="font-bold text-slate-900 dark:text-white">{registeredAthlete.email}</span>
+              </div>
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
+                <span className="text-slate-500 dark:text-zinc-500">Fayda FAN:</span>
+                <span className="font-bold" style={{ color: BRAND.primary }}>{formatFanDigits(registeredAthlete.fanId)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 dark:text-zinc-500">Registration Fee:</span>
+                <span className="font-extrabold text-base" style={{ color: BRAND.success }}>{formatEthiopianBirr(REGISTRATION_FEE_ETB)}</span>
+              </div>
+            </div>
+
+            {/* Error */}
+            {paymentError && (
+              <div className="rounded-xl border p-3 text-sm font-semibold flex items-start gap-2" style={{ backgroundColor: BRAND.error + "1A", borderColor: BRAND.error + "33", color: BRAND.error }}>
+                <CircleX className="h-4 w-4 shrink-0 mt-0.5" />
+                <span><strong>Payment Error:</strong> {paymentError}</span>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={handleStartPayment}
+              disabled={isInitializingPayment || isVerifyingPayment}
+              className="w-full flex items-center justify-center gap-2 rounded-2xl p-4 text-sm font-extrabold text-white shadow-lg transition-all disabled:opacity-50"
+              style={{ backgroundColor: BRAND.success }}
+              onMouseEnter={e => !(isInitializingPayment || isVerifyingPayment) && ((e.currentTarget as HTMLElement).style.backgroundColor = "#1B5E20")}
+              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = BRAND.success)}
+            >
+              {isInitializingPayment ? (
+                "Redirecting to payment..."
+              ) : (
+                `Pay ${formatEthiopianBirr(REGISTRATION_FEE_ETB)}`
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* STEP E: PENDING APPROVAL STATUS */}
         {regStep === "done" && registeredAthlete && (
           <div className="rounded-3xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/90 backdrop-blur-xl p-8 shadow-xl text-center space-y-6">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full text-3xl border" style={{ backgroundColor: BRAND.secondaryLight, color: BRAND.secondary, borderColor: BRAND.secondary + "33" }}>
@@ -491,6 +791,32 @@ export default function AthleteSelfRegistrationPage() {
                 <strong className="block mt-2">You will receive an email at {registeredAthlete.email} once your registration is approved.</strong>
               </p>
             </div>
+
+            {/* Payment confirmation */}
+            {paymentStatus === "paid" && (
+              <div className="rounded-2xl border p-5 text-left" style={{ backgroundColor: BRAND.success + "0F", borderColor: BRAND.success + "40" }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <BadgeCheck className="h-5 w-5" style={{ color: BRAND.success }} />
+                  <span className="text-sm font-extrabold" style={{ color: BRAND.success }}>Payment Confirmed</span>
+                </div>
+                <div className="grid grid-cols-2 gap-4 font-mono text-xs">
+                  <div>
+                    <p className="text-slate-500 dark:text-zinc-400 mb-0.5">Amount Paid</p>
+                    <p className="font-bold text-slate-900 dark:text-white">{formatEthiopianBirr(REGISTRATION_FEE_ETB)}</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-500 dark:text-zinc-400 mb-0.5">Transaction Ref</p>
+                    <p className="font-bold text-slate-900 dark:text-white break-all">{txRef || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-500 dark:text-zinc-400 mb-0.5">Method</p>
+                    <p className="font-bold text-slate-900 dark:text-white">
+                      {PAYMENT_METHODS.find((m) => m.id === paymentMethodId)?.name || "Telebirr"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50 dark:border-zinc-800 dark:bg-zinc-950/60 p-5 text-left text-xs font-mono space-y-2">
               <div className="flex justify-between">
@@ -520,7 +846,8 @@ export default function AthleteSelfRegistrationPage() {
               <ul className="space-y-1 ml-4 list-disc">
                 <li>Please check your email regularly for approval notifications</li>
                 <li>The review process typically takes 1-3 business days</li>
-                <li>Once approved, you'll receive login credentials to access the athlete portal</li>
+                <li>Once approved, you&apos;ll receive login credentials to access the athlete portal</li>
+                <li>Keep your payment receipt and transaction reference for your records</li>
               </ul>
             </div>
 
