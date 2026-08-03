@@ -33,7 +33,66 @@ interface RegisteredAthlete {
   fullName: string;
   fanId: string;
   phone: string;
+  regionalAssociation: string;
+  primarySpeciality: string;
+  clubAffiliation: string;
 }
+
+const REGIONAL_ASSOCIATIONS = [
+  "Addis Ababa",
+  "Afar",
+  "Amhara",
+  "Benishangul-Gumuz",
+  "Dire Dawa",
+  "Gambela",
+  "Harari",
+  "Oromia",
+  "Sidama",
+  "Somali",
+  "South Ethiopia",
+  "Southwest Ethiopia",
+  "Tigray",
+];
+
+const ATHLETICS_SPECIALITIES = [
+  "100m",
+  "200m",
+  "400m",
+  "800m",
+  "1500m",
+  "3000m",
+  "5000m",
+  "10000m",
+  "3000m Steeplechase",
+  "110m Hurdles",
+  "400m Hurdles",
+  "4x100m Relay",
+  "4x400m Relay",
+  "Half Marathon",
+  "Marathon",
+  "Long Jump",
+  "High Jump",
+  "Triple Jump",
+  "Pole Vault",
+  "Shot Put",
+  "Discus Throw",
+  "Javelin Throw",
+  "Hammer Throw",
+  "Race Walking",
+  "Combined Events (Heptathlon/Decathlon)",
+];
+
+const CLUB_AFFILIATIONS = [
+  "Individual (Not Affiliated)",
+  "Defence Athletics Club",
+  "Arada Athletics Club",
+  "Hawassa Athletics AC",
+  "Oromia Police Sports Club",
+  "Mugher Cement Athletics Club",
+  "Sebeta City Athletics Club",
+  "Commercial Bank of Ethiopia (CBE) SC",
+  "Ethiopian Airlines Athletics Club",
+];
 
 type RegStep = "fayda" | "otp" | "details" | "done";
 const STEP_BACK: Record<RegStep, RegStep> = {
@@ -110,6 +169,11 @@ export default function AthleteSelfRegistrationPage() {
   const [contactEmail, setContactEmail] = useState("");
   const [contactPassword, setContactPassword] = useState("");
   const [detailsError, setDetailsError] = useState("");
+
+  // Step 3b: Athletics profile
+  const [regionalAssociation, setRegionalAssociation] = useState("");
+  const [primarySpeciality, setPrimarySpeciality] = useState("");
+  const [clubAffiliation, setClubAffiliation] = useState(CLUB_AFFILIATIONS[0]);
 
   // Step 4: Success
   const [registeredAthlete, setRegisteredAthlete] = useState<RegisteredAthlete | null>(null);
@@ -216,6 +280,14 @@ export default function AthleteSelfRegistrationPage() {
       setDetailsError(`Password must include ${passwordIssues.join(", ")}.`);
       return;
     }
+    if (!regionalAssociation) {
+      setDetailsError("Please select your regional athletics association.");
+      return;
+    }
+    if (!primarySpeciality) {
+      setDetailsError("Please select your primary athletics speciality.");
+      return;
+    }
     if (!faydaProfile) return;
 
     const generatedId = `EAF-ATH-${Date.now()}`;
@@ -225,6 +297,9 @@ export default function AthleteSelfRegistrationPage() {
       fullName: faydaProfile.name,
       fanId: faydaProfile.fanId,
       phone: normalizeEthiopianPhone(contactPhone),
+      regionalAssociation,
+      primarySpeciality,
+      clubAffiliation,
     };
 
     setRegisteredAthlete(athlete);
@@ -433,81 +508,164 @@ export default function AthleteSelfRegistrationPage() {
                 </svg>
                 Fayda Verified
               </span>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Your Identity & Contact Details</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Complete Your Athlete Profile</h2>
             </div>
 
-            {/* Identity Card */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 dark:border-zinc-800 dark:bg-zinc-950/60 p-5 space-y-3 font-mono text-xs">
-              <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
-                <span className="text-slate-500 dark:text-zinc-500">Full Name:</span>
-                <span className="font-extrabold text-slate-900 dark:text-white text-sm">{faydaProfile.name}</span>
-              </div>
-              <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
-                <span className="text-slate-500 dark:text-zinc-500">Fayda FAN ID:</span>
-                <span className="font-bold" style={{ color: BRAND.primary }}>{formatFanDigits(faydaProfile.fanId)}</span>
-              </div>
-              <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
-                <span className="text-slate-500 dark:text-zinc-500">Date of Birth:</span>
-                <span className="font-bold text-slate-800 dark:text-zinc-200">{faydaProfile.dob}</span>
-              </div>
-              <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
-                <span className="text-slate-500 dark:text-zinc-500">Gender:</span>
-                <span className="font-bold text-slate-800 dark:text-zinc-200">{faydaProfile.gender}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-500 dark:text-zinc-500">Nationality:</span>
-                <span className="font-bold text-slate-800 dark:text-zinc-200">{faydaProfile.nationality}</span>
-              </div>
-            </div>
-
-            {/* Contact Form */}
-            <form onSubmit={handleFinalRegistration} className="space-y-4 text-xs">
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
-                  Your Phone Number <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="tel"
-                  value={contactPhone}
-                  onChange={(e) => {
-                    setContactPhone(e.target.value);
-                    setDetailsError("");
-                  }}
-                  placeholder="+251 912 345 678"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:outline-none transition-colors"
-                />
+            {/* SECTION 1: ACCOUNT */}
+            <div>
+              <div className="flex items-center gap-2.5 mb-4">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg text-xs font-extrabold text-white" style={{ backgroundColor: BRAND.primary }}>
+                  1
+                </span>
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">Account</h3>
+                  <p className="text-[10px] font-semibold text-slate-500 dark:text-zinc-400">Your verified identity & sign-in details</p>
+                </div>
               </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
-                  Your Email Address <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  value={contactEmail}
-                  onChange={(e) => {
-                    setContactEmail(e.target.value);
-                    setDetailsError("");
-                  }}
-                  placeholder="athlete@example.com"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:outline-none transition-colors"
-                />
+              {/* Identity Card */}
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 dark:border-zinc-800 dark:bg-zinc-950/60 p-5 space-y-3 font-mono text-xs mb-4">
+                <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-500">Full Name:</span>
+                  <span className="font-extrabold text-slate-900 dark:text-white text-sm">{faydaProfile.name}</span>
+                </div>
+                <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-500">Fayda FAN ID:</span>
+                  <span className="font-bold" style={{ color: BRAND.primary }}>{formatFanDigits(faydaProfile.fanId)}</span>
+                </div>
+                <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-500">Date of Birth:</span>
+                  <span className="font-bold text-slate-800 dark:text-zinc-200">{faydaProfile.dob}</span>
+                </div>
+                <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-500">Gender:</span>
+                  <span className="font-bold text-slate-800 dark:text-zinc-200">{faydaProfile.gender}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500 dark:text-zinc-500">Nationality:</span>
+                  <span className="font-bold text-slate-800 dark:text-zinc-200">{faydaProfile.nationality}</span>
+                </div>
               </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
-                  Create Password <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="password"
-                  value={contactPassword}
-                  onChange={(e) => {
-                    setContactPassword(e.target.value);
-                    setDetailsError("");
-                  }}
-                  placeholder="••••••••"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:outline-none transition-colors"
-                />
+              {/* Contact Form */}
+              <form onSubmit={handleFinalRegistration} className="space-y-4 text-xs">
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                    Your Phone Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    value={contactPhone}
+                    onChange={(e) => {
+                      setContactPhone(e.target.value);
+                      setDetailsError("");
+                    }}
+                    placeholder="+251 912 345 678"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                    Your Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={contactEmail}
+                    onChange={(e) => {
+                      setContactEmail(e.target.value);
+                      setDetailsError("");
+                    }}
+                    placeholder="athlete@example.com"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                    Create Password <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="password"
+                    value={contactPassword}
+                    onChange={(e) => {
+                      setContactPassword(e.target.value);
+                      setDetailsError("");
+                    }}
+                    placeholder="••••••••"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:outline-none transition-colors"
+                  />
+                </div>
+
+                {/* SECTION 2: ATHLETICS PROFILE */}
+                <div>
+                <div className="flex items-center gap-2.5 mb-4">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg text-xs font-extrabold text-white" style={{ backgroundColor: BRAND.secondary }}>
+                    2
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">Athletics Profile</h3>
+                    <p className="text-[10px] font-semibold text-slate-500 dark:text-zinc-400">Your competition details & affiliations</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                      Regional Athletics Association <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={regionalAssociation}
+                      onChange={(e) => {
+                        setRegionalAssociation(e.target.value);
+                        setDetailsError("");
+                      }}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:outline-none transition-colors appearance-none"
+                    >
+                      <option value="">Select your region...</option>
+                      {REGIONAL_ASSOCIATIONS.map((region) => (
+                        <option key={region} value={region}>{region}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                      Primary Athletics Speciality <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={primarySpeciality}
+                      onChange={(e) => {
+                        setPrimarySpeciality(e.target.value);
+                        setDetailsError("");
+                      }}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:outline-none transition-colors appearance-none"
+                    >
+                      <option value="">Select your event...</option>
+                      {ATHLETICS_SPECIALITIES.map((event) => (
+                        <option key={event} value={event}>{event}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-zinc-300 mb-1.5">
+                      Club Affiliation <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={clubAffiliation}
+                      onChange={(e) => {
+                        setClubAffiliation(e.target.value);
+                        setDetailsError("");
+                      }}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white focus:outline-none transition-colors appearance-none"
+                    >
+                      {CLUB_AFFILIATIONS.map((club) => (
+                        <option key={club} value={club}>{club}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               </div>
 
               {detailsError && (
@@ -525,7 +683,8 @@ export default function AthleteSelfRegistrationPage() {
               >
                 Submit Registration →
               </button>
-            </form>
+              </form>
+            </div>
           </div>
         )}
 
