@@ -520,7 +520,7 @@ export default function AthleteSelfRegistrationPage() {
               <ul className="space-y-1 ml-4 list-disc">
                 <li>Please check your email regularly for approval notifications</li>
                 <li>The review process typically takes 1-3 business days</li>
-                <li>Once approved, you'll receive login credentials to access the athlete portal</li>
+                <li>Once approved, you&apos;ll receive login credentials to access the athlete portal</li>
               </ul>
             </div>
 

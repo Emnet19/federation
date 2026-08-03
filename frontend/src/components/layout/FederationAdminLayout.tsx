@@ -71,6 +71,15 @@ export default function FederationAdminLayout({ children }: { children: React.Re
       ),
     },
     {
+      name: "Event Organizers",
+      href: "/events/create",
+      icon: (
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      ),
+    },
+    {
       name: "Policy & Licensing",
       href: "/federation/policy",
       icon: (
@@ -95,7 +104,12 @@ export default function FederationAdminLayout({ children }: { children: React.Re
       return user?.role === "Federation Admin";
     }
     if (user?.role === "Club Admin") {
-      return item.href === "/federation" || item.href === "/federation/clubs" || item.href === "/federation/clubs/members";
+      return (
+        item.href === "/federation" ||
+        item.href === "/federation/clubs" ||
+        item.href === "/federation/clubs/members" ||
+        item.href === "/events/create"
+      );
     }
     return true;
   });

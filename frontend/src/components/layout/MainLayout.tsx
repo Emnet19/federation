@@ -72,6 +72,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       ),
     },
     {
+      name: "Event Organizers",
+      href: "/events/create",
+      icon: (
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      ),
+    },
+    {
       name: "Policy & Licensing",
       href: "/federation/policy",
       icon: (
@@ -96,7 +105,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       return user?.role === "Federation Admin";
     }
     if (user?.role === "Club Admin") {
-      return item.href === "/federation" || item.href === "/federation/clubs" || item.href === "/federation/clubs/members";
+      return (
+        item.href === "/federation" ||
+        item.href === "/federation/clubs" ||
+        item.href === "/federation/clubs/members" ||
+        item.href === "/events/create"
+      );
     }
     return true;
   });
@@ -136,11 +150,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 active:scale-[0.98] border ${
-                    isActive
+                  className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 active:scale-[0.98] border ${isActive
                       ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 shadow-sm"
                       : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-200 border-transparent"
-                  }`}
+                    }`}
                 >
                   {item.icon}
                   {item.name}
@@ -242,9 +255,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     key={item.name}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
-                      isActive ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" : "text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800/40"
-                    }`}
+                    className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${isActive ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" : "text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800/40"
+                      }`}
                   >
                     {item.icon}
                     {item.name}
