@@ -1,0 +1,114 @@
+{
+  "app": {
+    "name": "EACRMS",
+    "tagline": "Addaa Bilisummaa Ispeettiiksii fi Roster Qindeessituu",
+    "version": "Fedhereeshinii v2.4",
+    "searchPlaceholder": "Taa'amaalee, garee, ispeettiistootaa barbaadi...",
+    "switchToDark": "Mudaa madaa'aa irra jijjiiri",
+    "switchToLight": "Mudaa ifaa irra jijjiiri",
+    "selectLanguage": "Afaan kee filadhu",
+    "closeMenu": "Meenyyuu cufi",
+    "openMenu": "Meenyyuu banii"
+  },
+  "nav": {
+    "competitionManagement": "To'annaa Kubbaa",
+    "eventApproval": "Iddoo Mirkaneessituu Taa'amaalee",
+    "pendingReview": "Eegamaa Jiru",
+    "eafHub": "Iddoo Hooggii EAF",
+    "eafHubDesc": "Mirkaneeffituu fi Hooggii Ispeettiiksii",
+    "addisAbaba": "Finfinnee",
+    "liveSync": "Walsimsii Eegduu"
+  },
+  "common": {
+    "all": "Hunda",
+    "refresh": "Haaromsi",
+    "exportCsv": "CSV Fudhi",
+    "cancel": "Haquu",
+    "processing": "Taasisaa jira...",
+    "saving": "Olkaa'aa jira...",
+    "approve": "Mirkaneessi",
+    "na": "Hin Jiru",
+    "athletes": "Ispeettiistootaa",
+    "registered": "Galmaa'e",
+    "remaining": "Hafe"
+  },
+  "roles": {
+    "FEDERATION_ADMIN": "Bulchaa Fedhereeshinii"
+  },
+  "filters": {
+    "allCategories": "Gosa Hunda",
+    "allRegions": "Naannoo Hunda",
+    "searchEvent": "Maqaa taa'amaa, bulchaa, magaalaa..."
+  },
+  "statuses": {
+    "Approved": "Mirkaneesse",
+    "Rejected": "Didduu",
+    "Draft": "Galmee",
+    "Pending": "Eegamaa Jiru"
+  },
+  "approval": {
+    "badge": "Bosona Mirkaneessituu Fedhereeshinii",
+    "title": "Iddoo Mirkaneessituu Taa'amaalee",
+    "subtitle": "Taa'amaalee ispeettiiksii haaraa mirkaneessituu arfii bulchiinsa jala mirkaneessi.",
+    "refreshList": "Tarree Haaromsi",
+    "statusUpdated": "\"{{name}}\" haala gara {{status}} jijjiirame.",
+    "notesSaved": "Yaadota bulchaa olkaa'e."
+  },
+  "form": {
+    "region": "Naannoo",
+    "registrationOpens": "Galmaa'uu Banama",
+    "registrationDeadline": "Yeroo Dhumaa Galmaa'uu",
+    "saveDraft": "Galmee Olkaa'i"
+  },
+  "table": {
+    "eventName": "Maqaa Taa'amaa",
+    "category": "Gosa",
+    "organizer": "Bulchaa",
+    "regionStadium": "Naannoo / Stadeemii",
+    "schedule": "Taa'amaa",
+    "quota": "Dorgommii",
+    "submittedBy": "Ergamee",
+    "status": "Haala",
+    "actions": "Hojii",
+    "viewFullDossier": "Dossier Guutuu Argadhu",
+    "approveEvent": "Taa'amaa Mirkaneeffadhu",
+    "rejectEvent": "Taa'amaa Didduu",
+    "emptyTitle": "Ispeettiiksii Taa'amaalee Hin Jiru",
+    "emptyDesc": "Taa'amaalee adooftuu kee waliin hin jiru. Barbaachaa kee bal'isi yk taa'amaa haaraa qindeessi.",
+    "viewEventDetails": "Bal'inaa Taa'amaa Argadhu"
+  },
+  "drawer": {
+    "eventIdentifier": "Asayyaa Taa'amaa",
+    "eventDetails": "Bal'inaa Taa'amaa",
+    "generalInfo": "Odeeffannoo Guutuu",
+    "scheduleDetails": "Bal'inaa Taa'amaa",
+    "eventDescription": "Ibsa Taa'amaa",
+    "noDescription": "Ibsa hin jiru.",
+    "participantQuota": "Dorgommii Ispeettiistootaa fi Haala Roster",
+    "maxCapacity": "Dorgommii Guutuu",
+    "registeredRemaining": "Galmaa'e / Hafe",
+    "capacityFilled": "{{percent}}% Dorgommii Dagatame",
+    "approvalHistory": "Seenaa Mirkaneessituu",
+    "adminNotes": "Yaadota Bulchaa Fedhereeshinii",
+    "adminNotesPlaceholder": "Yaadota keecha bulchaa fedhereeshinii...",
+    "competitionLevel": "Sadddaa Kubbaa",
+    "competitionDate": "Guyyaa Kubbaa",
+    "startTime": "Yeroo Jalqabaa",
+    "stadiumVenue": "Stadeemii / Ba'ee",
+    "requestChanges": "Jijjiiramaa kaa'i"
+  },
+  "modal": {
+    "confirmApproval": "Mirkaneessituu Taa'amaa Mirkaneessi",
+    "confirmRejection": "Didduu Taa'amaa Mirkaneessi",
+    "sanctioningBoard": "Bosona Rasee'aa EACRMS",
+    "targetEvent": "Taa'amaa Aangawwaa",
+    "approveDesc": "Taa'amaa kana mirkaneessuu felexaa ta'a? Hooggii kana kubbaa mirkaneessuu, guyyaa ispeettiiksii biyyaa keessa banuu fi bulchaa taa'amaa kunnamaa godhaa.",
+    "rejectDesc": "Taa'amaa kana didduu felexaa ta'a? Hooggii kana mirkaneessituu didduu godhaa. Kallattii sadhaa bulchaa kee fayyadami.",
+    "rejectionReason": "Kallattii Didduu *",
+    "approvalNotes": "Yaadota Mirkaneessituu Rasee'aa (Filannoo)",
+    "rejectPlaceholder": "Teknikaa, kallattii guyyaa yk rakkoo ba'ee ibsi...",
+    "approvePlaceholder": "Yaadota mirkaneessituu, ispeettiistootaa yk haala specialii galchi...",
+    "approveCompetition": "Kubbaa Mirkaneessi",
+    "rejectEvent": "Taa'amaa Didduu"
+  }
+}

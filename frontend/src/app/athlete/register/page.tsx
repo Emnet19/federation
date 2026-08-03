@@ -847,7 +847,6 @@ export default function AthleteSelfRegistrationPage() {
                 <li>Please check your email regularly for approval notifications</li>
                 <li>The review process typically takes 1-3 business days</li>
                 <li>Once approved, you&apos;ll receive login credentials to access the athlete portal</li>
-                <li>Keep your payment receipt and transaction reference for your records</li>
               </ul>
             </div>
 

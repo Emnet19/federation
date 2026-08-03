@@ -1,0 +1,114 @@
+{
+  "app": {
+    "name": "EACRMS",
+    "tagline": "የኢትዮጵያ አትሌቲክስ ቻለንጅ እና ረስተር ማስተዳደሪያ ስርዓት",
+    "version": "ፌዴሬሽን v2.4",
+    "searchPlaceholder": "ዝግጅቶች፣ ክበቦች፣ አትሌቶችን ፈልግ...",
+    "switchToDark": "ጥቁር ገጽታ ላይ ቀይር",
+    "switchToLight": "ደመና ገጽታ ላይ ቀይር",
+    "selectLanguage": "ቋንቋዎን ይምረጡ",
+    "closeMenu": "ምናምን ዝጋ",
+    "openMenu": "ምናምን ክፈት"
+  },
+  "nav": {
+    "competitionManagement": "የቻለንጅ አስተዳደር",
+    "eventApproval": "የዝግጅት ማጽደቂያ ማዕከል",
+    "pendingReview": "በመጠበቅ ላይ",
+    "eafHub": "የኢአፍ ስራ ማዕከል",
+    "eafHubDesc": "የአርmięን አትሌቲክስ ማጽደቂያ እና ዝግጅት ስራ",
+    "addisAbaba": "አዲስ አበባ",
+    "liveSync": "ቀጥታ ማስተካከያ"
+  },
+  "common": {
+    "all": "ሁሉም",
+    "refresh": "ማ新鲜ening",
+    "exportCsv": "CSV አወጣ",
+    "cancel": "ሰርዝ",
+    "processing": "በማከናወን ላይ...",
+    "saving": "በማስቀመጥ ላይ...",
+    "approve": "ማጽደቂያ",
+    "na": "አይደልም",
+    "athletes": "አትሌቶች",
+    "registered": "ተመዝግበዋል",
+    "remaining": "ቀርቧል"
+  },
+  "roles": {
+    "FEDERATION_ADMIN": "ፌዴሬሽን አስተዳዳሪ"
+  },
+  "filters": {
+    "allCategories": "ሁሉም ምድር",
+    "allRegions": "ሁሉም ክልሎች",
+    "searchEvent": "ዝግጅት ስም፣ አስተዳዳሪ፣ ከተማ..."
+  },
+  "statuses": {
+    "Approved": "ጸድቋል",
+    "Rejected": "ውድድር",
+    "Draft": "ዕድል",
+    "Pending": "በመጠበቅ ላይ"
+  },
+  "approval": {
+    "badge": "ፌዴሬሽን ማጽደቂያ ሹራ",
+    "title": "የዝግጅት ማጽደቂያ ማዕከል",
+    "subtitle": "አዲስ የተቀበሉ የአትሌቲክስ ቻለንጅ ከማጽደቂያ በፊት ይመልከቱ።",
+    "refreshList": "ዝርዝር አድስ",
+    "statusUpdated": "\"{{name}}\" ሁኔታ ወደ {{status}} ተቀይሧል።",
+    "notesSaved": "የአስተዳዳሪ ማስታወሻዎች ተቀምጧል።"
+  },
+  "form": {
+    "region": "ክልል",
+    "registrationOpens": "ምዝገባ ይከፈታል",
+    "registrationDeadline": "የምዝገባ ዛፍን ቀን",
+    "saveDraft": "ዕድል አስቀምጥ"
+  },
+  "table": {
+    "eventName": "የዝግጅት ስም",
+    "category": "ምድር",
+    "organizer": "አስተዳዳሪ",
+    "regionStadium": "ክልል / ስታዲየም",
+    "schedule": "መርሆ",
+    "quota": "አቅም",
+    "submittedBy": "የተላከ በ",
+    "status": "ሁኔታ",
+    "actions": "ስራዎች",
+    "viewFullDossier": "ሙሉ ሰነድ ተመልከት",
+    "approveEvent": "ዝግጅት አጽድቅ",
+    "rejectEvent": "ዝግጅት ውድድር",
+    "emptyTitle": "የአትሌቲክስ ᝍግጅቶች አልተገኙም",
+    "emptyDesc": "ከተመረጠው ማጣሪያ ጋር የሚመሳሰሉ ምንም የቻለንጅ ዝግጅቶች የለም። ፈለጋዎን ያስናብሩ ወይም አዲስ ዝግጅት ያዋቅሩ።",
+    "viewEventDetails": "የዝግጅት ዝርዝር ተመልከት"
+  },
+  "drawer": {
+    "eventIdentifier": "የዝግጅት መለያ",
+    "eventDetails": "የዝግጅት ዝርዝሮች",
+    "generalInfo": "አጠቃላይ መረጃ",
+    "scheduleDetails": "የመርሆ ዝርዝሮች",
+    "eventDescription": "የዝግጅት መግለጫ",
+    "noDescription": "ምንም መግለጫ አልተሰጥም።",
+    "participantQuota": "የተሳትፎ አቅም እና ረስተር ሁኔታ",
+    "maxCapacity": "ከፍተኛ አቅም",
+    "registeredRemaining": "ተመዝግብዋል / ቀርቧል",
+    "capacityFilled": "{{percent}}% አቅም ተሞልቷል",
+    "approvalHistory": "የማጽደቂያ ታሪክ",
+    "adminNotes": "የፌዴሬሽን አስተዳዳሪ ማስታወሻዎች",
+    "adminNotesPlaceholder": "ለፌዴሬሽን አስተዳዳሪዎች ውስጣዊ ማስታወሻዎች...",
+    "competitionLevel": "የቻለንጅ ደረጃ",
+    "competitionDate": "የቻለንጅ ቀን",
+    "startTime": "መነሻ ሰዓት",
+    "stadiumVenue": "ስታዲየም / ቦታ",
+    "requestChanges": "ለውጦች ጠይቅ"
+  },
+  "modal": {
+    "confirmApproval": "የዝግጅት ማጽደቂያ ያረጋግጡ",
+    "confirmRejection": "የዝግጅት ውድድር ያረጋግጡ",
+    "sanctioningBoard": "ኢአርምስ መደበኛ ማጽደቂያ ሹራ",
+    "targetEvent": "ŝi የምትነቅፈው ዝግጅት",
+    "approveDesc": "ይህን ዝግጅት ማጽደቅ መፈላጊ ነው? ይህ ስራ ቻለንጁን ያጽድቃል፣ ወደ ብሔራዊ የአትሌቲክስ ቀን ያመለክታል እና ለዝግጅት አስተዳዳሪ ያስታውቃል።",
+    "rejectDesc": "ይህን ዝግጅት ውድድር መፈላጊ ነው? ይህ ስራ የማጽደቂያ ጥያቄውን ይከለክላል። እባክዎን ለአስተዳዳሪው ግልጽ ምክንያት ይስጡ።",
+    "rejectionReason": "የውድድር ምክንያት *",
+    "approvalNotes": "መደበኛ የማጽደቂያ ማስታወሻዎች (አማራጭ)",
+    "rejectPlaceholder": "ቴክኒካዊ ስህተት፣ የቀን ግጭት ወይም የቦታ ችግሮችን ያወክሉ...",
+    "approvePlaceholder": "ማጽደቂያ ማስታወሻዎች፣ የዳኝ ምደባዎች ወይም ልዩ ሁኔታዎች ያስገቡ...",
+    "approveCompetition": "ቻለንጅ አጽድቅ",
+    "rejectEvent": "ዝግጅት ውድድር"
+  }
+}

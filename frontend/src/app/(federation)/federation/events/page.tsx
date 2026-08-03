@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const events = [
   { id: "EVT-001", name: "100m Men Senior Final", venue: "Addis Ababa Stadium", status: "Seeded", lanes: 8, heats: 1, windLimit: 2.0, timingSystem: "FinishLynx + RFID" },
@@ -16,6 +17,7 @@ const statusStyle: Record<string, string> = {
 };
 
 export default function EventsPage() {
+  const router = useRouter();
   const [items, setItems] = useState(events);
   const [running, setRunning] = useState<string | null>(null);
 
@@ -78,7 +80,10 @@ export default function EventsPage() {
       <div className="rounded-2xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/30 overflow-hidden shadow-sm">
         <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 px-6 py-4">
           <h2 className="text-base font-bold text-slate-900 dark:text-zinc-200">Competition Events</h2>
-          <button className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500 transition-colors active:scale-95 shadow-sm">
+          <button
+            onClick={() => router.push('/events/create')}
+            className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500 transition-colors active:scale-95 shadow-sm"
+          >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>

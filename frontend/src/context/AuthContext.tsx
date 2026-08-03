@@ -44,6 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const storedUser = localStorage.getItem("eacrms_session");
     if (storedUser) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration-safe session restore
         setUser(JSON.parse(storedUser));
       } catch (e) {
         console.error("Failed to parse stored session", e);
