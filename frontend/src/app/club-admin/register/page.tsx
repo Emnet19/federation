@@ -21,6 +21,20 @@ export interface RosterMember {
   eventCategory?: string;
 }
 
+interface PendingAthleteSubmission {
+  id: string;
+  fullName: string;
+  fanId: string;
+  clubId: string;
+  clubName: string;
+  phone: string;
+  status?: string;
+  issuedDate?: string;
+  dob?: string;
+  gender?: "Male" | "Female";
+  eventCategory?: string;
+}
+
 export interface CompetitionEvent {
   id: string;
   title: string;
@@ -166,7 +180,7 @@ export default function StandaloneClubAdminRegisterPage() {
       const stored = localStorage.getItem("eacrms_pending_athletes");
       if (stored) {
         const pendingList = JSON.parse(stored);
-        const mappedPending: RosterMember[] = pendingList.map((p: any) => ({
+        const mappedPending: RosterMember[] = pendingList.map((p: PendingAthleteSubmission) => ({
           id: p.id,
           memberType: "Athlete",
           fullName: p.fullName,
@@ -181,6 +195,7 @@ export default function StandaloneClubAdminRegisterPage() {
           eventCategory: p.eventCategory,
         }));
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- load pending submissions on mount
         setMembers((prev) => {
           const ids = new Set(prev.map((m) => m.id));
           const newEntries = mappedPending.filter((m) => !ids.has(m.id));

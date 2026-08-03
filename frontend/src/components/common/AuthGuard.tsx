@@ -40,11 +40,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  // Role Protection: Federation Admin has full access; Club Admin can access Club & Roster Management
+  // Role Protection: Federation Admin has full access; Club Admin can access Club & Roster Management and the Create Event page
   const isClubRoute = pathname.startsWith("/federation/clubs");
   const isAllowed =
     user.role === "Federation Admin" ||
-    (user.role === "Club Admin" && (isClubRoute || pathname === "/federation"));
+    (user.role === "Club Admin" &&
+      (isClubRoute || pathname === "/federation" || pathname === "/events/create"));
 
   if (!isAllowed) {
     return (
